@@ -1,0 +1,2 @@
+void drawPlayer();
+void drawEnemies();
