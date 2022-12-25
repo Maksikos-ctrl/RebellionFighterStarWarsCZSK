@@ -47,6 +47,13 @@ void drawEnemies();
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 #define M_PI 3.14159265358979323846
+#define PLATFORM_WIDTH 20
+#define PLATFORM_HEIGHT 2
+#define PLATFORM_LENGTH 20
+
+
+
+
 
 float playerX = 0.0f;
 float playerY = 0.0f;
@@ -124,12 +131,51 @@ void mouse_touch(int key, int x, int y) {
 }
 
 
+void display_platform() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // here, i'm setting up projection matrix
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, WINDOW_WIDTH / WINDOW_HEIGHT, 0.1, 100.0);
+
+
+    // here, i'm setting up the modelview matrix
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // Draw the platform
+    drawPlatform();
+
+    // Swap the front and back buffers to update the display
+    glutSwapBuffers();
+}
+
+void reshape(int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+
+void drawPlatform() {
+    glPushMatrix();
+    glTranslatef(0.0f, -PLATFORM_LENGTH / 2.0f,  0.0f);
+    glScalef(PLATFORM_WIDTH, PLATFORM_HEIGHT, PLATFORM_LENGTH);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+}
+
+
+
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); 
     glutCreateWindow("FPS game by Max Chernikov");  
-    glutSpecialFunc(mouse_touch);   
+    glutSpecialFunc(mouse_touch);  
+    glutDisplayFunc(display_platform);
+    glutReshapeFunc(reshape);
     glutMainLoop();
 
     return 0;
