@@ -107,6 +107,29 @@ void keyboard_touch(unsigned char key, int x, int y) {
 }
 
 
+// void keyboard_touch(unsigned char key, int x, int y) {
+//     switch (key) {
+//         case 'w':
+//             // move the player forward by adding a small amount to the player's z-coordinate
+//             playerZ += 0.1f;
+//             break;
+//         case 'a':
+//             // move the player left by subtracting a small amount from the player's x-coordinate
+//             playerX -= 0.1f;
+//             break;
+//         case 's':
+//             // move the player backward by subtracting a small amount from the player's z-coordinate
+//             playerZ -= 0.1f;
+//             break;
+//         case 'd':
+//             // move the player right by adding a small amount to the player's x-coordinate
+//             playerX += 0.1f;
+//             break;
+//     }
+// }
+
+
+
 void mouse_touch(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_UP:
@@ -138,16 +161,23 @@ void display_platform() {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, WINDOW_WIDTH / WINDOW_HEIGHT, 0.1, 100.0);
+    gluPerspective(45.0f, (GLfloat) WINDOW_WIDTH / (GLfloat) WINDOW_HEIGHT, 1, 1000.0);
 
 
     // here, i'm setting up the modelview matrix
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    gluLookAt(playerX, playerY, playerZ, // eye position
+          playerX + sin(playerYaw * M_PI / 180.0f), playerY + sin(playerPitch * M_PI / 180.0f), playerZ + cos(playerYaw * M_PI / 180.0f), // look-at point
+          0.0f, 1.0f, 0.0f); // up vector
 
     // Draw the platform
     drawPlatform();
+    
+    drawPlayer();
+
+    drawEnemies();
 
     // Swap the front and back buffers to update the display
     glutSwapBuffers();
@@ -169,10 +199,14 @@ void drawPlatform() {
 
 
 
+
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); 
     glutCreateWindow("FPS game by Max Chernikov");  
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_DEPTH_TEST);
     glutSpecialFunc(mouse_touch);  
     glutDisplayFunc(display_platform);
     glutReshapeFunc(reshape);
