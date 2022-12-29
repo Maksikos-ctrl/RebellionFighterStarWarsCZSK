@@ -11,6 +11,8 @@ void initStage(void) {
 
     initBullets();
 
+    initWave();
+
 
     bg = loadTexture("assets/starfield.jpg");
 
@@ -26,6 +28,8 @@ void initStage(void) {
 
 static void logic(void) {
 
+    stage.hasAliens = 0;
+
 
     // This will shift our background down when it comes to drawing.
     bgY += app.deltaTime;
@@ -37,9 +41,13 @@ static void logic(void) {
 
     moveStars();
 
-    doPlayer();
+    doEntities();
 
     removeOffscreenBullets();
+
+    if (stage.hasAliens == 0) {
+        nextWave();
+    }
 }
 
 static void draw(void) {
