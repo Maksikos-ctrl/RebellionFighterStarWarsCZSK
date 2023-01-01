@@ -4,9 +4,9 @@ delta time == elapsed time
 
 */
 
-void removeOffscreenBullets(void) {
+void removeOffscreensBullets(void) {
 
-    Bullet *b, *prev;
+    sBullet *b, *prev;
 
 
     prev = &stage.bulletHead;
@@ -43,8 +43,8 @@ void removeOffscreenBullets(void) {
 }
 
 
-static void doAlienCollision(Bullet *b) {
-    Entity *e;
+static void doAlienCollision(sBullet *b) {
+    sEntity *e;
 
     for (e = stage.entityHead.next; e != NULL; e = e->next) {
         if (e->type == ET_ALIEN && collision(e->x, e->y, e->texture->rect.w, e->texture->rect.h, b->x, b->y, b->texture->rect.w, b->texture->rect.h)) {

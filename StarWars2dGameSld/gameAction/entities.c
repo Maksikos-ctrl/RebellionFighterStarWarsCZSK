@@ -1,7 +1,7 @@
 
 
 void doEntities() {
-    Entity *e, *prev;
+    sEntity *e, *prev;
 
     prev = &stage.entityHead;
 

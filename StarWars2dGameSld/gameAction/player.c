@@ -8,6 +8,10 @@ TODO Static means that the function or variable is only visible within the file 
 #include <math.h>
 
 
+// extern sEntity *player;
+// extern AtlasImage *image;
+
+
 void initPlayer(void) {
 
     Fighter *f = malloc(sizeof(Fighter));
@@ -17,7 +21,7 @@ void initPlayer(void) {
     f->reloadRate = 25;
 
 
-    player = spawnEntity();
+    player = spawnsEntity();
     player->texture = getAtlasImage("assets/plane.jpeg", 1);
     player->x = (SCREEN_WIDTH - player->texture->rect.w) / 2;
     player->y = SCREEN_HEIGHT - 100;
@@ -33,6 +37,7 @@ void doPlayer(void) {
     Fighter *f = (Fighter*) player->data;
 
     f->reload = fmax(f->reload - app.deltaTime, 0);
+    f->invokeSidearm = 0;
 
     
 
@@ -42,19 +47,21 @@ void doPlayer(void) {
     if (app.keyboard[SDL_SCANCODE_DOWN]) player->x  += f->speed * app.deltaTime;
 
     if (app.keyboard[SDL_SCANCODE_LCTRL] && f->reload == 0) {
-        fireBullet();
+        firesBullet();
         
         f->reload = f->reloadRate;
+
+        f->invokeSidearm = 1;
     }
 
 
     player->x = fmin(fmax(player->x, 0), SCREEN_WIDTH - player->texture->rect.w);
-    player->y = fmin(fmax(player->y, 0), SCREEN_HEIGHT - player->texture->rect.w);
+    player->y = fmin(fmax(player->y, 0), SCREEN_HEIGHT - player->texture->rect.h);
 
 }
 
-static void fireBullet(void) {
-    Bullet *b = spawnBullet();
+static void firesBullet(void) {
+    sBullet *b = spawnsBullet();
 
     b->host = player;
     b->texture = bulletTexture;

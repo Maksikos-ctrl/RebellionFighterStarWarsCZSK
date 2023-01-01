@@ -4,7 +4,7 @@
 
 
 void addPointsPod(int x, int y) {
-    Entity *e;
+    sEntity *e;
     PointsPod *p = malloc(sizeof(PointsPod));
     memset(p, 0, sizeof(PointsPod));
 
@@ -15,7 +15,7 @@ void addPointsPod(int x, int y) {
     if (texture == NULL) texture = getAtlasImage("assets/star.png", 1);
 
 
-    e =  = spawnEntity(ET_POINTS);
+    e =  = spawnsEntity(ET_POINTS);
     e->x = x;
     e->y = y;
     e->texture = texture;
@@ -25,7 +25,7 @@ void addPointsPod(int x, int y) {
 }
 
 
-static void tick(Entity *self) {
+static void tick(sEntity *self) {
     PointsPod *p = (PointsPod *)self->data;
 
     // updates the position

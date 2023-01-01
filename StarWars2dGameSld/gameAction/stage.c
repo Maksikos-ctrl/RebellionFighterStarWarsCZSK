@@ -7,9 +7,11 @@ void initStage(void) {
 
     initEntities();
 
-    initPlayer();
+    initPlayer();   
 
-    initBullets();
+    initStars();
+
+    initsBullets();
 
     initWave();
 
@@ -19,6 +21,8 @@ void initStage(void) {
 
     // will be used to hold the position of the background as it scrolls
     bgY = -SCREEN_HEIGHT;
+
+    addPowerUpPod(SCREEN_WIDTH / 2, -50, PP_SIDEARM);
 
     app.delegate.logic = logic;
     app.delegate.draw = draw;
@@ -43,7 +47,7 @@ static void logic(void) {
 
     doEntities();
 
-    removeOffscreenBullets();
+    removeOffscreensBullets();
 
     if (stage.hasAliens == 0) {
         nextWave();
@@ -57,7 +61,7 @@ static void draw(void) {
 
 	drawEntities();
 
-	drawBullets();
+	drawsBullets();
 
 	drawHud();
 }
