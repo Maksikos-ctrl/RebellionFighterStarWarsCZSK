@@ -1,3 +1,10 @@
+/*
+
+This means that points will only be awarded for clearing the entire wave. We might tweak this in future, to always award a single point per alien killed, with the points pods offering a bonus (such as 10 or 25 additional points). 
+
+*/
+
+
 #include <math.h>
 
 void initSwingingAlien(int startDelay, int x, double swingAmount, int sweepRange, int dy) {
@@ -76,5 +83,10 @@ static void tick(sEntity *self) {
 
 
 static void die(sEntity *self) {
-    addPointsPod(self->x, self->y);
+
+    addExplosions(self->x, (self->texture->rect.w / 2), self->y + (self->texture->rect.h / 2));
+
+    // player will be rewarded approx 10-25 points
+    if (--stage.numAliens == 0) addPointsPod(self->x, self->y);
+  
 }

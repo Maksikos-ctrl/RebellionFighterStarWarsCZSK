@@ -22,7 +22,9 @@ void removeOffscreensBullets(void) {
         if (!collision(b->x, b->y, b->texture->rect.w, b->texture->rect.h, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
             b->dead = 1;
         } else if (b->host == player) {
-            doAlienCollision();
+            doAlienCollision(b);
+        } else if (b->host->type == ET_ALIEN && player.health > 0) {
+            doPLayerCollision(b);
         }
 
         if (b->dead) {
@@ -44,16 +46,27 @@ void removeOffscreensBullets(void) {
 
 
 static void doAlienCollision(sBullet *b) {
-    sEntity *e;
+    
 
-    for (e = stage.entityHead.next; e != NULL; e = e->next) {
-        if (e->type == ET_ALIEN && collision(e->x, e->y, e->texture->rect.w, e->texture->rect.h, b->x, b->y, b->texture->rect.w, b->texture->rect.h)) {
-            e->health--;
+    
+    if ((collision(player->x, player->y, player->texture->rect.w, player->texture->rect.h, b->x, b->y, b->texture->rect.w, b->texture->rect.))) {
+        
+        player.health = 0;
 
-            if (e->health <= 0) e->die(e);
+        player->die(player);
+
+        
+        
+        b->dead = 1;
+
+        addSmallExplosion(b->x + (b->texture->rect.w / 2), b->y + (b->texture->rect.h / 2));
             
-            b->dead = 1;
-                
-        }
     }
+
+}
+
+static void die(sEntity *e)  {
+
+    addExplosion(self->x + (self->texture->rect.w / 2), self->y + (self->texture->rect.h / 2)
+
 }

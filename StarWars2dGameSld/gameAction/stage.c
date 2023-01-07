@@ -13,6 +13,8 @@ void initStage(void) {
 
     initsBullets();
 
+    initEffects();
+
     initWave();
 
 
@@ -22,7 +24,11 @@ void initStage(void) {
     // will be used to hold the position of the background as it scrolls
     bgY = -SCREEN_HEIGHT;
 
-    addPowerUpPod(SCREEN_WIDTH / 2, -50, PP_SIDEARM);
+    // 2 secs timeout
+
+    gameOverTime = FPS * 2;
+
+    
 
     app.delegate.logic = logic;
     app.delegate.draw = draw;
@@ -32,16 +38,14 @@ void initStage(void) {
 
 static void logic(void) {
 
-    stage.hasAliens = 0;
+    stage.numAliens = 0;
 
 
     // This will shift our background down when it comes to drawing.
     bgY += app.deltaTime;
 
 
-    if (bgY >= 0) {
-        bgY -= SCREEN_HEIGHT;
-    }
+    if (bgY >= 0) bgY -= SCREEN_HEIGHT; 
 
     moveStars();
 
@@ -49,7 +53,20 @@ static void logic(void) {
 
     removeOffscreensBullets();
 
-    if (stage.hasAliens == 0) {
+    doEffects();
+
+    if (player->health <= 0) {
+        gameOverTime -= app.deltaTime;
+
+        if (gameOverTime <= 0) {
+            resetStage();
+
+            initStage();
+        }
+    } else if (stage.numAliens == 0) {
+
+        clearDeadEntities();
+
         nextWave();
     }
 }
@@ -68,13 +85,13 @@ static void draw(void) {
 
 static void drawBg(void) {
 
-    
+    clearEntities();
 
-    double y;
+    clearDeadEntities();
 
-    for (y = bgY; y < SCREEN_HEIGHT; y += SCREEN_HEIGHT) {
-        blit(bg, 0, y, 0, SDL_FLIP_NONE);
-    }
+    clearBullets();
+
+    clearEffects();
 
 }    
 

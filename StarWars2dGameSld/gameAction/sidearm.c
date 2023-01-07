@@ -38,8 +38,8 @@ void initSidearm(int ox) {
 
 
 
-static void tick(Entity *e) {
-    Sidearm *s = malloc(Sidearm*) self->data;
+static void tick(sEntity *e) {
+    Sidearm *s = (Sidearm*) self->data;
 
     self->x = player->x;
     self->x += player->texture->rect.w / 2;
@@ -50,10 +50,15 @@ static void tick(Entity *e) {
     self.y -= self->texture.rect.h;
 
     if (((Fighter *) player->data)->invokeSidearm) firesBullet(self);
+
+    if (player->health <= 0) {
+        addExplosion(self->x + (self->texture->rect.w / 2) - (bulletTexture->rect.w / 2));
+        self->health = 0;
+    }
 }
 
 
-static void firesBullet(Entity *e) {
+static void firesBullet(sEntity *e) {
 
     sBullet *b = spawnsBullet(player);
     b->texture = bulletTexture;
