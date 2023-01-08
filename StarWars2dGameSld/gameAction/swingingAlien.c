@@ -43,7 +43,7 @@ void initSwingingAlien(int startDelay, int x, double swingAmount, int sweepRange
 }
 
 
-static void tick(sEntity *self) {
+static void tick(ssEntity *self) {
     SwingingAlien *s = (SwingingAlien *) self->data;
 
     s->startDelay -= app.deltaTime;
@@ -82,7 +82,7 @@ static void tick(sEntity *self) {
 }
 
 
-static void die(sEntity *self) {
+static void die(ssEntity *self) {
 
     addExplosions(self->x, (self->texture->rect.w / 2), self->y + (self->texture->rect.h / 2));
 

@@ -21,9 +21,11 @@ struct sEntity {
     // a pointer to a function with no return type and no arguments, representing additional data associated with the entity
     void (*data);
     // tick: a pointer to a function with no return type and a single Entity pointer argument, representing a function that is called every frame to update the entity
-    void (*tick)(Entity *self);
-    void (*die)(Entity *self);
-    sEntity *next;
+    void (*tick)(sEntity *self);
+    void (*draw)(sEntity *self);
+    void (*takeDamage)(sEntity *self, int amount);
+    void (*die)(sEntity *self);
+    sEntity *next;  
 };
 
 typedef struct {
@@ -83,6 +85,22 @@ struct sExplosion {
 typedef struct {
     sEntity entityHead, *entityEnd;
     sBullet bulletHead, *bulletEnd;
-    int numAliens, score, highscore;
+    int hasAliens, score, numWaveAliens;
 } Stage;
+
+typedef struct {
+    double swoop, swoopAmount, startDelay,
+    reload, dx, damageTimer;
+} SwoopingAlien;
+
+
+typedef struct {
+    double startDelay, reload,
+    dx, dy, damageTimer; 
+} StraightAlien;
+
+
+typedef struct {
+    double dx, damageTimer;
+} SupplyShip;
 

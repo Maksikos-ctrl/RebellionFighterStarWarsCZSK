@@ -46,7 +46,7 @@ void clearEntities(void) {
 }
 
 void clearDeadEntities(void) {
-    Entity *e;
+     sEntity *e;
 
     while (deadHead.next) {
         e = deadHead.next;

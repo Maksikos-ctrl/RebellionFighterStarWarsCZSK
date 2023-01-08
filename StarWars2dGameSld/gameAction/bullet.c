@@ -67,6 +67,6 @@ static void doAlienCollision(sBullet *b) {
 
 static void die(sEntity *e)  {
 
-    addExplosion(self->x + (self->texture->rect.w / 2), self->y + (self->texture->rect.h / 2)
+    addExplosion(self->x + (self->texture->rect.w / 2), self->y + (self->texture->rect.h / 2));
 
 }

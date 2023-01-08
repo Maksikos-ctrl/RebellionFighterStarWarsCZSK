@@ -4,7 +4,7 @@
 
 
 void addPointsPod(int x, int y) {
-    sEntity *e;
+    s sEntity *e;
     PointsPod *p = malloc(sizeof(PointsPod));
     memset(p, 0, sizeof(PointsPod));
 
@@ -25,7 +25,7 @@ void addPointsPod(int x, int y) {
 }
 
 
-static void tick(sEntity *self) {
+static void tick(ssEntity *self) {
     PointsPod *p = (PointsPod *)self->data;
 
     // updates the position

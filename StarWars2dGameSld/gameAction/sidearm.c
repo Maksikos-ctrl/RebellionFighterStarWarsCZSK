@@ -13,7 +13,7 @@ static AtlasImage *bulletTexture = NULL;
 
 
 void initSidearm(int ox) {
-    Entity *e;
+     sEntity *e;
     Sidearm *s = malloc(sizeof(Sidearm));
     memset(s, 0, sizeof(Sidearm));
 

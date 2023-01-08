@@ -67,7 +67,7 @@ void doEffects(void) {
 }
 
 void drawEffects(void) {
-    Explosion *e;
+    sExplosion *e;
 
 
     for (e = explosionHead.next; e != NULL; e = e->next) {
@@ -78,7 +78,7 @@ void drawEffects(void) {
 
 void drawSmallExplosion(int x, int y) {
 
-    Explosion *e;
+    sExplosion *e;
 
     e = malloc(sizeof(Explosion));
     memset(e, 0, sizeof(Explosion));
@@ -97,7 +97,7 @@ void drawSmallExplosion(int x, int y) {
 
 void addExplosion(int x, int y) {
     
-    EExplosion *e;
+    sExplosion *e;
 
     e = malloc(sizeof(Explosion));
     memset(e, 0, sizeof(Explosion));
@@ -115,7 +115,7 @@ void addExplosion(int x, int y) {
 
 
 void clearEffects(void) {
-    Explosion *e;
+    sExplosion *e;
 
     while (explosionHead.next) {
         e = explosionHead.next;
