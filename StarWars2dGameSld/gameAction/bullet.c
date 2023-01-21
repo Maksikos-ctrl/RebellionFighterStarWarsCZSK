@@ -67,6 +67,13 @@ static void doAlienCollision(sBullet *b) {
 
 static void die(sEntity *e)  {
 
+    stage.score++;
+
     addExplosion(self->x + (self->texture->rect.w / 2), self->y + (self->texture->rect.h / 2));
+
+    if (--stage.numWaveAliens == 0) {
+        addPointsPod(self->x, self->y);
+    }
+
 
 }

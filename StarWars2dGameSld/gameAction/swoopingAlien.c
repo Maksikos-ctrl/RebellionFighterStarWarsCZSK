@@ -175,3 +175,28 @@ static void tick(sEntity *self) {
 
 
 }
+
+
+static void draw(sEntity *self) {
+    SwoopingAlien *s = (SwoopingAlien*) self->data;
+
+    blitAtlasImage(self->texture, self->x, self->y, 0, SDL_FLIP_NONE);
+
+    if (s->damageTimer > 0) {
+        SDL_SetTextureBlendMode(self->texture->texture, SDL_BLENDMODE_ADD);
+        blitAtlasImage(self->texture, self->x, self->y, 0, SDL_FLIP_NONE);
+        // SDL_SetTextureBlendMode(self->texture->texture, SDL_BLENDMODE_ADD);
+    }
+
+    
+}
+
+static void takeDamage(sEntity *self, int amount) {
+    
+
+    self->health -= amount;
+
+    if (self->health == 0) self->die(self);
+
+    ((SwoopingAlien *) self->data)->damageTimer = 8;
+}

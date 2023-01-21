@@ -6,7 +6,7 @@ CHANGE_TIMER == 3 seconds in our header (FPS * 3)
 
 void powerUpPod(int x, int y, int type) {
 
-    s sEntity *e;
+    sEntity *e;
     PowerUpPod *p = malloc(sizeof(PowerUpPod));
     memset(p, 0, sizeof(PowerUpPod));
 
