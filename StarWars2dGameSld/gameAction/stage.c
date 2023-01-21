@@ -28,6 +28,11 @@ void initStage(void) {
 
     gameOverTime = FPS * 2;
 
+
+    //set the next supply ship time to half the supply ship interval
+    
+    nextSupplyShipTime = SUPPLY_SHIP_INTERVAL / 2;
+
     
 
     app.delegate.logic = logic;
@@ -68,6 +73,15 @@ static void logic(void) {
         clearDeadEntities();
 
         nextWave();
+    }
+
+    nextSupplyShipTime -= app.deltaTime;
+
+    if (nextSupplyShipTime <= 0) {
+        initSupplyShip();
+        nextSupplyShipTime = SUPPLY_SHIP_INTERVAL;
+
+        
     }
 }
 

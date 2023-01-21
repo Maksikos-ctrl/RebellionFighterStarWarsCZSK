@@ -104,3 +104,12 @@ typedef struct {
     double dx, damageTimer;
 } SupplyShip;
 
+typedef struct {
+    char name[MAX_NAME_lENGTH];
+    int score;
+} HighScore;
+
+typedef struct {
+    HighScore highScores[MAX_HIGH_SCORES];
+} Game;
+
