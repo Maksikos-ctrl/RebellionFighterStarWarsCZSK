@@ -113,3 +113,16 @@ typedef struct {
     HighScore highScores[MAX_HIGH_SCORES];
 } Game;
 
+typedef struct {
+    int maxHealth;
+    double thinkTime, dx, reload, attackTime, numShootsToFire, timerDamage;
+    void (*attack)(sEntity *self);
+} Boss;
+
+typedef struct {
+    sEntity entityHead, *entityEnd;
+    sBullet bulletHead, *bulletEnd;
+    int hasAliens, score, numWaveAliens, waveNum;
+    sEntity *boss;
+}
+
