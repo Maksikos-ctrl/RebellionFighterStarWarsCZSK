@@ -12,52 +12,37 @@ this file was created for the purpose of handling keyboard input
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_ttf.h>
 #include "bullets.h"
-
+#include <stdbool.h>
 
 #define WINDOW_HEIGHT 640
 #define WINDOW_WIDTH 580
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 80
 #define width 100
+#define height 100
 
 #define SPEED 350
 
+
+
+
+
+
 // speed in pixels/second
 
-// Update the frame count
+
 void update_fps(int *frame_count) {
     (*frame_count)++;
 }
 
-// Render the fps
+
 void render_fps(SDL_Renderer *renderer, TTF_Font *font, int frame_count, int start_time) {
-    int avg_time = (SDL_GetTicks() - start_time) / frame_count;
-    int fps = 1000 / avg_time;
-    char fps_text[20];
-    sprintf(fps_text, "FPS: %d", fps);
-    SDL_Color color = {0, 255, 0};
-    SDL_Surface *surface = TTF_RenderText_Solid(font, fps_text, color);
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect dst_rect = {10, 10, surface->w, surface->h};
-
-
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture, NULL, &dst_rect);
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(surface);
+    
+   
+    
 }
 
-// Your game loop
-void game_loop(SDL_Renderer *renderer, TTF_Font *font) {
-    int frame_count = 0;
-    int start_time = SDL_GetTicks();
-    bool game_running = true;
-    while (game_running) {
-        update_fps(&frame_count);
-        render_fps(renderer, font, frame_count, start_time);
-        SDL_RenderPresent(renderer);
-    }
-}
+
 
 
 int main(void) {
@@ -212,7 +197,42 @@ int main(void) {
     heart3 = SDL_CreateTextureFromSurface(renderer, heartSurface3);
     SDL_FreeSurface(heartSurface3);
 
+  
+    Uint32 frame_count;
+    Uint32 start_time = SDL_GetTicks();
+    int avg_time = (SDL_GetTicks() - start_time) / (frame_count ? frame_count : 1);
+    char fps_text[20];
+
+    SDL_Surface *surface;
+    SDL_Texture *fps_texture;
+
+    int w, h;
+
+    SDL_Rect fps_dest;
+
+    SDL_Color color = {0, 255, 0};
+
+    int fps = 1000 / avg_time;
+    sprintf(fps_text, "FPS: %d", fps);
+    surface = TTF_RenderText_Solid(font, fps_text, color);
+
+    if (!surface) {
+        fprintf(stderr, "TTF_RenderText_Solid() failed: %s\n", TTF_GetError());
+        return;
+    }
+
+    fps_texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    if (!fps_texture) {
+        fprintf(stderr, "SDL_CreateTextureFromSurface() failed: %s\n", SDL_GetError());
+        return;
+    }
+
+    TTF_SizeText(font, fps_text, &w, &h);
     
+   
+   
+    SDL_FreeSurface(surface);
 
    
 
@@ -222,6 +242,7 @@ int main(void) {
 
     SDL_Rect text_dest;
     SDL_Rect heart_dest, heart2_dest, heart3_dest;
+    SDL_Rect fps_dest;
     // set the x and y coordinates of the text rectangle
     text_dest.x = 10;
     text_dest.y = 10;
@@ -240,6 +261,9 @@ int main(void) {
     heart3_dest.y = 0;
 
 
+    fps_dest = {10, 720-height-10, width, height};
+
+
   
 
 
@@ -248,6 +272,7 @@ int main(void) {
    
     SDL_QueryTexture(text, NULL, NULL, &text_dest.w, &text_dest.h);
     SDL_QueryTexture(texture, NULL, NULL, &img_dest.w, &img_dest.h);
+    SDL_QueryTexture(fps_texture, NULL, NULL, &fps_dest.w, &fps_dest.h);
     SDL_QueryTexture(heart, NULL, NULL, &heart_dest.w, &heart_dest.h);
     SDL_QueryTexture(heart2, NULL, NULL, &heart2_dest.w, &heart2_dest.h);
     SDL_QueryTexture(heart3, NULL, NULL, &heart3_dest.w, &heart3_dest.h);
@@ -362,6 +387,8 @@ int main(void) {
         
         SDL_RenderCopy(renderer, text, NULL, &text_dest);
 
+        SDL_RenderCopy(renderer, fps_texture, NULL, &fps_dest);
+
         SDL_RenderCopy(renderer, heart, NULL, &heart_dest);
         SDL_RenderCopy(renderer, heart2, NULL, &heart2_dest);
         SDL_RenderCopy(renderer, heart3, NULL, &heart3_dest);
@@ -376,7 +403,8 @@ int main(void) {
         SDL_Delay(1000/60);
     }
 
-
+    Uint32 frame_count;
+    Uint32 start_time = SDL_GetTicks();
     SDL_Event event;
     while (1) {
         // Handle events
@@ -385,65 +413,69 @@ int main(void) {
                 return 0;
             }
 
-            if (event.type == SDL_MOUSEBUTTONDOWN) {
+            if (event.type == SDL_MOUSEBUTTONUP) {
                 int x, y;
                 SDL_GetMouseState(&x, &y);
                 shoot_bullet(x, y);
             }
-            }
-
-            // Your existing code...
-
-            // Update the bullet positions
-            update_bullets();
-
-            // Render the bullets
-            render_bullets(renderer);
-
-            game_loop(renderer, font);
-
-
-            SDL_RenderPresent(renderer);
         }
-
-    
-
-        // message on the screen
-
-        printf("Press any key to continue...");
-
-        // clear the window
-        SDL_RenderClear(renderer);
-
-        // draw the image, txt and bg to the window
-    
+        update_fps(&frame_count);
         
-        SDL_RenderCopy(renderer, background, NULL, NULL);
-        SDL_RenderCopy(renderer, text, NULL, &text_dest);
-        SDL_RenderCopy(renderer, heart, NULL, &heart_dest);
-        SDL_RenderCopy(renderer, heart2, NULL, &heart2_dest);
-        SDL_RenderCopy(renderer, heart3, NULL, &heart3_dest);
-        SDL_RenderCopy(renderer, texture, NULL, &img_dest);
 
-        // double buffering is when you draw to a "back buffer" that isn't displayed, then you swap the back buffer with the front buffer (the one that is displayed) so that what you drew appears on the screen. This prevents flickering
+        // Your existing code...
+
+        // Update the bullet positions
+        update_bullets();
+
+        // Render the bullets
+        render_bullets(renderer);
+
+        // render_fps(renderer, font, frame_count, start_time); 
+
+
         SDL_RenderPresent(renderer);
+    }
 
-
-        
-
-        // clean up resources before exiting
     
-        SDL_DestroyTexture(texture);
-        SDL_DestroyTexture(background);
-        SDL_DestroyTexture(text);
-        SDL_DestroyTexture(heart);
-        SDL_DestroyTexture(heart2);
-        SDL_DestroyTexture(heart3);
-        TTF_CloseFont(font);
 
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
+    // message on the screen
+
+    printf("Press any key to continue...");
+
+    // clear the window
+    SDL_RenderClear(renderer);
+
+    // draw the image, txt and bg to the window
+
+    
+    SDL_RenderCopy(renderer, background, NULL, NULL);
+    SDL_RenderCopy(renderer, text, NULL, &text_dest);
+    SDL_RenderCopy(renderer, fps_texture, NULL, &fps_dest);
+    SDL_RenderCopy(renderer, heart, NULL, &heart_dest);
+    SDL_RenderCopy(renderer, heart2, NULL, &heart2_dest);
+    SDL_RenderCopy(renderer, heart3, NULL, &heart3_dest);
+    SDL_RenderCopy(renderer, texture, NULL, &img_dest);
+
+    // double buffering is when you draw to a "back buffer" that isn't displayed, then you swap the back buffer with the front buffer (the one that is displayed) so that what you drew appears on the screen. This prevents flickering
+    SDL_RenderPresent(renderer);
+
+
+    
+
+    // clean up resources before exiting
+
+    SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(background);
+    SDL_DestroyTexture(text);
+    SDL_DestroyTexture(fps_texture);
+    SDL_DestroyTexture(heart);
+    SDL_DestroyTexture(heart2);
+    SDL_DestroyTexture(heart3);
+    TTF_CloseFont(font);
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
     
 
 

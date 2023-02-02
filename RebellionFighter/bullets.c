@@ -52,7 +52,7 @@ void render_bullets(SDL_Renderer* renderer) {
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (bullets[i].isActive) {
             SDL_Rect bulletRect = {bullets[i].x, bullets[i].y, 5, 10};
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            SDL_SetRenderDrawColor(renderer, 216, 124, 108, 255);
             SDL_RenderFillRect(renderer, &bulletRect);
         }
     }

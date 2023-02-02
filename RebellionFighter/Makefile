@@ -1,10 +1,10 @@
-# A simple makefile for the SDL intro project
+## A simple makefile for the SDL intro project
 
 # set the compiler
 CC = gcc
 
 # set the compiler flags
-CFLAGS := $(shell sdl2-config --libs --cflags) -ggdb3 -O0 --std=c99 -Wall 
+CFLAGS := $(shell sdl2-config --libs --cflags) -ggdb3 -O0 --std=c99 -Wall
 LDFLAGS := -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # add header files here
@@ -32,7 +32,8 @@ main.o: main.c
 
 # recipe for building bullets.o
 bullets.o: bullets.c bullets.h
-	gcc -lSDL2 -I/usr/include/SDL2 -D_REENTRANT -ggdb3 -O0 --std=c99 -Wall  -c bullets.c
+	$(CC) $(CFLAGS) -c bullets.c -o bullets.o
+
 
 
 
