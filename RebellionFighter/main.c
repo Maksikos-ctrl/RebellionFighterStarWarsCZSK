@@ -13,13 +13,14 @@ this file was created for the purpose of handling keyboard input
 #include <SDL2/SDL_ttf.h>
 #include "bullets.h"
 #include <stdbool.h>
+#include <math.h>
 
 #define WINDOW_HEIGHT 640
 #define WINDOW_WIDTH 580
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 80
 #define width 100
-#define height 100
+#define height 600
 
 #define SPEED 350
 
@@ -31,16 +32,11 @@ this file was created for the purpose of handling keyboard input
 // speed in pixels/second
 
 
-void update_fps(int *frame_count) {
-    (*frame_count)++;
-}
+// void update_fps(int *frame_count) {
+//     (*frame_count)++;
+// }
 
 
-void render_fps(SDL_Renderer *renderer, TTF_Font *font, int frame_count, int start_time) {
-    
-   
-    
-}
 
 
 
@@ -52,7 +48,7 @@ int main(void) {
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Star wars. Rebellion Fighter!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0);
+    SDL_Window* window = SDL_CreateWindow("Star wars. Rebellion Fighter!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 960, 640, 0);
 
     if (!window) {
         printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
@@ -198,41 +194,94 @@ int main(void) {
     SDL_FreeSurface(heartSurface3);
 
   
-    Uint32 frame_count;
-    Uint32 start_time = SDL_GetTicks();
-    int avg_time = (SDL_GetTicks() - start_time) / (frame_count ? frame_count : 1);
-    char fps_text[20];
+    // Uint32 frame_count = 0;
+    // Uint32 start_time = SDL_GetTicks();
+    // int avg_time = 0;
+    // char fps_text[20];
 
-    SDL_Surface *surface;
-    SDL_Texture *fps_texture;
-
-    int w, h;
-
-    SDL_Rect fps_dest;
-
-    SDL_Color color = {0, 255, 0};
-
-    int fps = 1000 / avg_time;
-    sprintf(fps_text, "FPS: %d", fps);
-    surface = TTF_RenderText_Solid(font, fps_text, color);
-
-    if (!surface) {
-        fprintf(stderr, "TTF_RenderText_Solid() failed: %s\n", TTF_GetError());
-        return;
+    // frame_count++;
+    // avg_time = SDL_GetTicks() - start_time;
+    // int fps = frame_count * 1000 / avg_time;
+    // bool running = 1;
+    // char fps_text[20];
+    // open the font
+    TTF_Font* fps_font = TTF_OpenFont("assets/arial.ttf", 14);
+    if (fps_font == NULL) {
+        printf("Error opening font: %s\n", TTF_GetError());
+        return 1;
     }
 
-    fps_texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-    if (!fps_texture) {
-        fprintf(stderr, "SDL_CreateTextureFromSurface() failed: %s\n", SDL_GetError());
-        return;
-    }
-
-    TTF_SizeText(font, fps_text, &w, &h);
     
-   
-   
-    SDL_FreeSurface(surface);
+
+    // set the font style
+    TTF_SetFontStyle(fps_font, TTF_STYLE_BOLD);
+
+    // get the size of the text
+    int w1, h1;
+    TTF_SizeText(fps_font, "FPS", &w1, &h1);
+
+
+    // render the text
+    SDL_Color fps_color = {0, 255, 0};
+    SDL_Surface* fps_surface = TTF_RenderText_Solid(fps_font, "FPS: 60", fps_color);
+    if (fps_surface == NULL) {
+        printf("Error rendering text: %s\n", TTF_GetError());
+        return 1;
+    }
+
+    // create a text from the surface
+    SDL_Texture* fps_text= SDL_CreateTextureFromSurface(renderer, fps_surface);
+    SDL_FreeSurface(fps_surface );
+    if (fps_text== NULL) {
+        printf("Error creating text: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    
+    
+    
+
+    // Uint64 start = SDL_GetPerformanceCounter();
+
+    // // Do event loop
+
+    // // Do physics loop
+
+    // // Render the scene
+
+    // // Render the fps_text
+    // Uint64 end = SDL_GetPerformanceCounter();
+
+    // float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+    
+    // int fps = (elapsedMS > 0) ? 1000.0f / elapsedMS : 0.0f;
+    // sprintf(fps_text, "FPS: %d", fps);
+    // fps_surface = TTF_RenderText_Solid(fps_font, "FPS: ", fps_color);
+    // if (fps_surface  == NULL) {
+    //     printf("Error rendering text: %s\n", TTF_GetError());
+    //     return 1;
+    // }
+    // fps_text = SDL_CreateTextureFromSurface(renderer, fps_surface);
+    // SDL_FreeSurface(fps_surface);
+    // if (fps_text== NULL) {
+    //     printf("Error creating text: %s\n", SDL_GetError());
+    //     return 1;
+    // }
+
+    // Render the fps_texture to the screen
+    // ...
+
+    // SDL_FreeSurface(fps_surface);
+    
+
+    // Cap to 60 FPS
+    // SDL_Delay(floor(16.666f - elapsedMS));
+    
+
+
+    
+
+
 
    
 
@@ -251,7 +300,7 @@ int main(void) {
     img_dest.y = 100;
 
     
-    heart_dest.x = width + heart_dest.w + 490;
+    heart_dest.x = width + heart_dest.w + 800;
     heart_dest.y = 0;
 
     heart2_dest.x = heart_dest.x + heart_dest.w - 30;
@@ -261,7 +310,11 @@ int main(void) {
     heart3_dest.y = 0;
 
 
-    fps_dest = {10, 720-height-10, width, height};
+    fps_dest.x = 10;
+    fps_dest.y = height - h1;
+    fps_dest.w = w1;
+    fps_dest.h = h1;
+    
 
 
   
@@ -272,7 +325,7 @@ int main(void) {
    
     SDL_QueryTexture(text, NULL, NULL, &text_dest.w, &text_dest.h);
     SDL_QueryTexture(texture, NULL, NULL, &img_dest.w, &img_dest.h);
-    SDL_QueryTexture(fps_texture, NULL, NULL, &fps_dest.w, &fps_dest.h);
+    SDL_QueryTexture(fps_text, NULL, NULL, &fps_dest.w, &fps_dest.h);
     SDL_QueryTexture(heart, NULL, NULL, &heart_dest.w, &heart_dest.h);
     SDL_QueryTexture(heart2, NULL, NULL, &heart2_dest.w, &heart2_dest.h);
     SDL_QueryTexture(heart3, NULL, NULL, &heart3_dest.w, &heart3_dest.h);
@@ -295,7 +348,7 @@ int main(void) {
 
     // set 1 when window close button is pressed
     int close_requested = 0;
-    int score = 0;
+    // int score = 0;
 
     // anim loop
     while (!close_requested) {
@@ -387,7 +440,7 @@ int main(void) {
         
         SDL_RenderCopy(renderer, text, NULL, &text_dest);
 
-        SDL_RenderCopy(renderer, fps_texture, NULL, &fps_dest);
+        SDL_RenderCopy(renderer, fps_text, NULL, &fps_dest);
 
         SDL_RenderCopy(renderer, heart, NULL, &heart_dest);
         SDL_RenderCopy(renderer, heart2, NULL, &heart2_dest);
@@ -403,8 +456,8 @@ int main(void) {
         SDL_Delay(1000/60);
     }
 
-    Uint32 frame_count;
-    Uint32 start_time = SDL_GetTicks();
+    // Uint32 frame_count;
+    // Uint32 start_time = SDL_GetTicks();
     SDL_Event event;
     while (1) {
         // Handle events
@@ -419,10 +472,11 @@ int main(void) {
                 shoot_bullet(x, y);
             }
         }
-        update_fps(&frame_count);
+        // update_fps(&frame_cout);
+        
         
 
-        // Your existing code...
+       
 
         // Update the bullet positions
         update_bullets();
@@ -430,7 +484,7 @@ int main(void) {
         // Render the bullets
         render_bullets(renderer);
 
-        // render_fps(renderer, font, frame_count, start_time); 
+        
 
 
         SDL_RenderPresent(renderer);
@@ -450,11 +504,13 @@ int main(void) {
     
     SDL_RenderCopy(renderer, background, NULL, NULL);
     SDL_RenderCopy(renderer, text, NULL, &text_dest);
-    SDL_RenderCopy(renderer, fps_texture, NULL, &fps_dest);
+    SDL_RenderCopy(renderer, fps_text, NULL, &fps_dest);
     SDL_RenderCopy(renderer, heart, NULL, &heart_dest);
     SDL_RenderCopy(renderer, heart2, NULL, &heart2_dest);
     SDL_RenderCopy(renderer, heart3, NULL, &heart3_dest);
     SDL_RenderCopy(renderer, texture, NULL, &img_dest);
+
+    
 
     // double buffering is when you draw to a "back buffer" that isn't displayed, then you swap the back buffer with the front buffer (the one that is displayed) so that what you drew appears on the screen. This prevents flickering
     SDL_RenderPresent(renderer);
@@ -467,7 +523,7 @@ int main(void) {
     SDL_DestroyTexture(texture);
     SDL_DestroyTexture(background);
     SDL_DestroyTexture(text);
-    SDL_DestroyTexture(fps_texture);
+    SDL_DestroyTexture(fps_text);
     SDL_DestroyTexture(heart);
     SDL_DestroyTexture(heart2);
     SDL_DestroyTexture(heart3);
