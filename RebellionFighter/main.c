@@ -231,7 +231,7 @@ int main(int argc, char *argv[]) {
 
     
     SDL_Texture* fps_text= SDL_CreateTextureFromSurface(renderer, fps_surface);
-    SDL_FreeSurface(fps_surface );
+    SDL_FreeSurface(fps_surface);
     if (fps_text== NULL) {
         printf("Error creating text: %s\n", SDL_GetError());
         return 1;
@@ -409,45 +409,6 @@ int main(int argc, char *argv[]) {
         SDL_Delay(1000/180);
     }
 
-    // Uint32 frame_count;
-    // Uint32 start_time = SDL_GetTicks();
-    // SDL_Event event;
-    // while (1) {
-    //     // Handle events
-    //     while (SDL_PollEvent(&event)) {
-    //         if (event.type == SDL_QUIT) {
-    //             SDL_DestroyRenderer(renderer);
-    //             SDL_DestroyWindow(window);
-    //             SDL_Quit();
-    //             return 0;
-
-    //         }
-
-    //         if (event.type == SDL_MOUSEBUTTONUP) {
-    //             int x, y;
-    //             SDL_GetMouseState(&x, &y);
-    //             shoot_bullet(x, y);
-    //         }
-    //     }
-    //     // update_fps(&frame_cout);
-        
-        
-
-       
-
-    //     // Update the bullet positions
-    //     update_bullets();
-
-    //     // Render the bullets
-    //     render_bullets(renderer);
-
-        
-
-
-    //     SDL_RenderPresent(renderer);
-    // }
-
-    
 
     // message on the screen
 
@@ -457,23 +418,6 @@ int main(int argc, char *argv[]) {
     SDL_RenderClear(renderer);
 
 
-
-    
-    SDL_RenderCopy(renderer, background, NULL, NULL);
-    SDL_RenderCopy(renderer, text, NULL, &text_dest);
-    SDL_RenderCopy(renderer, fps_text, NULL, &fps_dest);
-    SDL_RenderCopy(renderer, heart, NULL, &heart_dest);
-    SDL_RenderCopy(renderer, heart2, NULL, &heart2_dest);
-    SDL_RenderCopy(renderer, heart3, NULL, &heart3_dest);
-    SDL_RenderCopy(renderer, texture, NULL, &img_dest);
-
-    
-
-    // double buffering is when you draw to a "back buffer" that isn't displayed, then you swap the back buffer with the front buffer (the one that is displayed) so that what you drew appears on the screen. This prevents flickering
-    // SDL_RenderPresent(renderer);
-
-
-    
 
     // clean up resources before exiting
 
@@ -485,10 +429,12 @@ int main(int argc, char *argv[]) {
     SDL_DestroyTexture(heart2);
     SDL_DestroyTexture(heart3);
     TTF_CloseFont(font);
+    TTF_CloseFont(fps_font);
+
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_Quit();
+    
     
 
 
