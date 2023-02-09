@@ -32,6 +32,11 @@ main.o: main.c
 bullets.o: bullets.c bullets.h
 	$(CC) $(CFLAGS) -c bullets.c 
 
+.PHONY: clean
+
+clean:
+	rm -f $(EXEC) $(OBJS) preload.so
+
 
 
 

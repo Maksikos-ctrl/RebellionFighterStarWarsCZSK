@@ -15,8 +15,8 @@ this file was created for the purpose of handling keyboard input
 #include <stdbool.h>
 #include <math.h>
 
-#define WINDOW_HEIGHT 640
-#define WINDOW_WIDTH 580
+#define WINDOW_HEIGHT 1280
+#define WINDOW_WIDTH 720
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 80
 #define width 100
@@ -41,14 +41,14 @@ this file was created for the purpose of handling keyboard input
 
 
 
-int main(void) {
+int main(int argc, char *argv[]) {
      // 0 == success
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
         printf("SDL_Init Error: %s\n", SDL_GetError());
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Star wars. Rebellion Fighter!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 960, 640, 0);
+    SDL_Window* window = SDL_CreateWindow("Star wars. Rebellion Fighter!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_HEIGHT, WINDOW_WIDTH, 0);
 
     if (!window) {
         printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
@@ -92,7 +92,7 @@ int main(void) {
     } 
     
     // load the background image
-    SDL_Surface* backgroundSurface = IMG_Load("assets/black.jpeg");
+    SDL_Surface* backgroundSurface = IMG_Load("assets/pikrepo.jpg");
     if (!backgroundSurface ) {
         printf("IMG_Load Error: %s",IMG_GetError());
         SDL_DestroyRenderer(renderer);
@@ -101,7 +101,7 @@ int main(void) {
         return 1;
     } 
     // Create a texture for the background image
-    SDL_Texture* background = SDL_CreateTextureFromSurface(renderer, backgroundSurface );
+    SDL_Texture* background = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_FreeSurface(backgroundSurface);
 
     if (!background) {
@@ -112,13 +112,13 @@ int main(void) {
         return 1;
     }
 
-    // initialize SDL_ttf frame_start = SDL_GetTicks();
+   
     if (TTF_Init() != 0) {
         printf("Error initializing SDL_ttf: %s\n", TTF_GetError());
         return 1;
     }
 
-    // open the font
+   
     TTF_Font* font = TTF_OpenFont("assets/arial.ttf", 14);
     if (font == NULL) {
         printf("Error opening font: %s\n", TTF_GetError());
@@ -127,15 +127,15 @@ int main(void) {
 
     
 
-    // set the font style
+    
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);
 
-    // get the size of the text
+  
     int w, h;
     TTF_SizeText(font, "Score", &w, &h);
 
 
-    // render the text
+   
     SDL_Color color = {255, 255, 255, 255};
     SDL_Surface* surface = TTF_RenderText_Solid(font, "Score", color);
     if (surface == NULL) {
@@ -143,7 +143,7 @@ int main(void) {
         return 1;
     }
 
-    // create a text from the surface
+
     SDL_Texture* text= SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     if (text== NULL) {
@@ -152,10 +152,10 @@ int main(void) {
     }
 
 
-    // heart texture
+
 
     SDL_Texture *heart, *heart2, *heart3;
-    // load 1 heart
+  
     SDL_Surface *heartSurface = IMG_Load("assets/fullHeart.png");
     if (!heartSurface ) {
         printf("IMG_Load Error: %s",IMG_GetError());
@@ -169,7 +169,7 @@ int main(void) {
     SDL_FreeSurface(heartSurface);
 
 
-    // Load heart 2
+ 
     SDL_Surface *heartSurface2 = IMG_Load("assets/fullHeart.png");
     if (!heartSurface2 ) {
         printf("IMG_Load Error: %s",IMG_GetError());
@@ -181,7 +181,7 @@ int main(void) {
     heart2 = SDL_CreateTextureFromSurface(renderer, heartSurface2);
     SDL_FreeSurface(heartSurface2);
 
-    // Load heart 3
+
     SDL_Surface *heartSurface3 = IMG_Load("assets/fullHeart.png");
     if (!heartSurface3 ) {
         printf("IMG_Load Error: %s",IMG_GetError());
@@ -200,7 +200,7 @@ int main(void) {
         if (elapsed_time > 0) {
             frame_rate = 1000 / elapsed_time;
         } else {
-            frame_rate = 60; // set a minimum frame rate
+            frame_rate = 60; 
         }
 
         frame_rate = 1000 / elapsed_time;
@@ -214,15 +214,14 @@ int main(void) {
             return 1;
         }
 
-        // set the font style
+       
         TTF_SetFontStyle(fps_font, TTF_STYLE_BOLD);
 
-        // get the size of the text
         int w1, h1;
         TTF_SizeText(fps_font, frame_rate_buffer, &w1, &h1);
 
 
-        // render the text
+       
         SDL_Color fps_color = {0, 255, 0};
         SDL_Surface* fps_surface = TTF_RenderText_Solid(fps_font, frame_rate_buffer, fps_color);
         if (fps_surface == NULL) {
@@ -230,7 +229,7 @@ int main(void) {
             return 1;
         }
 
-        // create a text from the surface
+       
         SDL_Texture* fps_text= SDL_CreateTextureFromSurface(renderer, fps_surface);
         SDL_FreeSurface(fps_surface );
         if (fps_text== NULL) {
@@ -241,16 +240,16 @@ int main(void) {
     }
 
        
-    // struct to hold the pos and size of the sprite
+  
     SDL_Rect img_dest;
 
     SDL_Rect text_dest;
     SDL_Rect heart_dest, heart2_dest, heart3_dest;
     SDL_Rect fps_dest;
-    // set the x and y coordinates of the text rectangle
+
     text_dest.x = 10;
     text_dest.y = 10;
-    // set the x and y coordinates of the image rectangle
+
     img_dest.x = 100;
     img_dest.y = 100;
 
@@ -276,7 +275,6 @@ int main(void) {
 
 
 
-    // get the width and height of the text and image textures and use them to set the width and height of the destination rectangles
    
     SDL_QueryTexture(text, NULL, NULL, &text_dest.w, &text_dest.h);
     SDL_QueryTexture(texture, NULL, NULL, &img_dest.w, &img_dest.h);
@@ -297,11 +295,11 @@ int main(void) {
     float y_vel = 0;
 
 
-    // keep track of which inputs are given
+
     int up = 0, down = 0, left = 0, right = 0;
 
 
-    // set 1 when window close button is pressed
+
     int close_requested = 0;
     // int score = 0;
 
@@ -309,7 +307,7 @@ int main(void) {
     while (!close_requested) {
         
         
-        // process events
+      
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -385,10 +383,10 @@ int main(void) {
         img_dest.y = (int) y_pos;
         img_dest.x = (int) x_pos;
         
-        // clear the window
+       
         SDL_RenderClear(renderer);
 
-        // draw the image, bg and text to the window
+   
         
         SDL_RenderCopy(renderer, background, NULL, NULL);
 
