@@ -92,7 +92,7 @@ int main(void) {
     } 
     
     // load the background image
-    SDL_Surface* backgroundSurface = IMG_Load("assets/pikrepo.jpg");
+    SDL_Surface* backgroundSurface = IMG_Load("assets/black.jpeg");
     if (!backgroundSurface ) {
         printf("IMG_Load Error: %s",IMG_GetError());
         SDL_DestroyRenderer(renderer);
@@ -112,7 +112,7 @@ int main(void) {
         return 1;
     }
 
-    // initialize SDL_ttf
+    // initialize SDL_ttf frame_start = SDL_GetTicks();
     if (TTF_Init() != 0) {
         printf("Error initializing SDL_ttf: %s\n", TTF_GetError());
         return 1;
@@ -194,98 +194,53 @@ int main(void) {
     SDL_FreeSurface(heartSurface3);
 
   
-    // Uint32 frame_count = 0;
-    // Uint32 start_time = SDL_GetTicks();
-    // int avg_time = 0;
-    // char fps_text[20];
+    int frame_rate = 0, frame_start = SDL_GetTicks(), h1, w1, fps_text;
+    while(1) {
+        int elapsed_time = SDL_GetTicks() - frame_start;
+        if (elapsed_time > 0) {
+            frame_rate = 1000 / elapsed_time;
+        } else {
+            frame_rate = 60; // set a minimum frame rate
+        }
 
-    // frame_count++;
-    // avg_time = SDL_GetTicks() - start_time;
-    // int fps = frame_count * 1000 / avg_time;
-    // bool running = 1;
-    // char fps_text[20];
-    // open the font
-    TTF_Font* fps_font = TTF_OpenFont("assets/arial.ttf", 14);
-    if (fps_font == NULL) {
-        printf("Error opening font: %s\n", TTF_GetError());
-        return 1;
+        frame_rate = 1000 / elapsed_time;
+
+        char frame_rate_buffer[50];
+        sprintf(frame_rate_buffer, "FPS: %d", frame_rate); 
+
+        TTF_Font* fps_font = TTF_OpenFont("assets/arial.ttf", 14);
+        if (fps_font == NULL) {
+            printf("Error opening font: %s\n", TTF_GetError());
+            return 1;
+        }
+
+        // set the font style
+        TTF_SetFontStyle(fps_font, TTF_STYLE_BOLD);
+
+        // get the size of the text
+        int w1, h1;
+        TTF_SizeText(fps_font, frame_rate_buffer, &w1, &h1);
+
+
+        // render the text
+        SDL_Color fps_color = {0, 255, 0};
+        SDL_Surface* fps_surface = TTF_RenderText_Solid(fps_font, frame_rate_buffer, fps_color);
+        if (fps_surface == NULL) {
+            printf("Error rendering text: %s\n", TTF_GetError());
+            return 1;
+        }
+
+        // create a text from the surface
+        SDL_Texture* fps_text= SDL_CreateTextureFromSurface(renderer, fps_surface);
+        SDL_FreeSurface(fps_surface );
+        if (fps_text== NULL) {
+            printf("Error creating text: %s\n", SDL_GetError());
+            return 1;
+        }
+
     }
 
-    
-
-    // set the font style
-    TTF_SetFontStyle(fps_font, TTF_STYLE_BOLD);
-
-    // get the size of the text
-    int w1, h1;
-    TTF_SizeText(fps_font, "FPS", &w1, &h1);
-
-
-    // render the text
-    SDL_Color fps_color = {0, 255, 0};
-    SDL_Surface* fps_surface = TTF_RenderText_Solid(fps_font, "FPS: 60", fps_color);
-    if (fps_surface == NULL) {
-        printf("Error rendering text: %s\n", TTF_GetError());
-        return 1;
-    }
-
-    // create a text from the surface
-    SDL_Texture* fps_text= SDL_CreateTextureFromSurface(renderer, fps_surface);
-    SDL_FreeSurface(fps_surface );
-    if (fps_text== NULL) {
-        printf("Error creating text: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    
-    
-    
-
-    // Uint64 start = SDL_GetPerformanceCounter();
-
-    // // Do event loop
-
-    // // Do physics loop
-
-    // // Render the scene
-
-    // // Render the fps_text
-    // Uint64 end = SDL_GetPerformanceCounter();
-
-    // float elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
-    
-    // int fps = (elapsedMS > 0) ? 1000.0f / elapsedMS : 0.0f;
-    // sprintf(fps_text, "FPS: %d", fps);
-    // fps_surface = TTF_RenderText_Solid(fps_font, "FPS: ", fps_color);
-    // if (fps_surface  == NULL) {
-    //     printf("Error rendering text: %s\n", TTF_GetError());
-    //     return 1;
-    // }
-    // fps_text = SDL_CreateTextureFromSurface(renderer, fps_surface);
-    // SDL_FreeSurface(fps_surface);
-    // if (fps_text== NULL) {
-    //     printf("Error creating text: %s\n", SDL_GetError());
-    //     return 1;
-    // }
-
-    // Render the fps_texture to the screen
-    // ...
-
-    // SDL_FreeSurface(fps_surface);
-    
-
-    // Cap to 60 FPS
-    // SDL_Delay(floor(16.666f - elapsedMS));
-    
-
-
-    
-
-
-
-   
-
-    
+       
     // struct to hold the pos and size of the sprite
     SDL_Rect img_dest;
 
