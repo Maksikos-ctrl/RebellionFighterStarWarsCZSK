@@ -15,8 +15,8 @@ this file was created for the purpose of handling keyboard input
 #include <stdbool.h>
 #include <math.h>
 
-#define WINDOW_HEIGHT 1280
-#define WINDOW_WIDTH 720
+#define WINDOW_HEIGHT 960
+#define WINDOW_WIDTH 580
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 80
 #define width 100
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // create a renderer, which sets up the graphics hardware
+   
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // load the image into memory using SDL_image library function
+  
     SDL_Surface* image = IMG_Load("assets/pngwing.png");
 
     if (!image) {
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }     
 
-    // load the image data into the graphics hardware's memory
+   
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, image);
     SDL_FreeSurface(image);
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
         return 1;
     } 
     
-    // load the background image
+  
     SDL_Surface* backgroundSurface = IMG_Load("assets/pikrepo.jpg");
     if (!backgroundSurface ) {
         printf("IMG_Load Error: %s",IMG_GetError());
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
         SDL_Quit();
         return 1;
     } 
-    // Create a texture for the background image
+   
     SDL_Texture* background = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_FreeSurface(backgroundSurface);
 
@@ -194,50 +194,50 @@ int main(int argc, char *argv[]) {
     SDL_FreeSurface(heartSurface3);
 
   
-    int frame_rate = 0, frame_start = SDL_GetTicks(), h1, w1, fps_text;
-    while(1) {
-        int elapsed_time = SDL_GetTicks() - frame_start;
-        if (elapsed_time > 0) {
-            frame_rate = 1000 / elapsed_time;
-        } else {
-            frame_rate = 60; 
-        }
-
+    int frame_rate = 0, frame_start = SDL_GetTicks();
+   
+    int elapsed_time = SDL_GetTicks() - frame_start;
+    if (elapsed_time > 0) {
         frame_rate = 1000 / elapsed_time;
-
-        char frame_rate_buffer[50];
-        sprintf(frame_rate_buffer, "FPS: %d", frame_rate); 
-
-        TTF_Font* fps_font = TTF_OpenFont("assets/arial.ttf", 14);
-        if (fps_font == NULL) {
-            printf("Error opening font: %s\n", TTF_GetError());
-            return 1;
-        }
-
-       
-        TTF_SetFontStyle(fps_font, TTF_STYLE_BOLD);
-
-        int w1, h1;
-        TTF_SizeText(fps_font, frame_rate_buffer, &w1, &h1);
-
-
-       
-        SDL_Color fps_color = {0, 255, 0};
-        SDL_Surface* fps_surface = TTF_RenderText_Solid(fps_font, frame_rate_buffer, fps_color);
-        if (fps_surface == NULL) {
-            printf("Error rendering text: %s\n", TTF_GetError());
-            return 1;
-        }
-
-       
-        SDL_Texture* fps_text= SDL_CreateTextureFromSurface(renderer, fps_surface);
-        SDL_FreeSurface(fps_surface );
-        if (fps_text== NULL) {
-            printf("Error creating text: %s\n", SDL_GetError());
-            return 1;
-        }
-
+    } else {
+        frame_rate = 60; 
     }
+
+      
+
+    char frame_rate_buffer[50];
+    sprintf(frame_rate_buffer, "FPS: %d", frame_rate); 
+
+    TTF_Font* fps_font = TTF_OpenFont("assets/arial.ttf", 14);
+    if (fps_font == NULL) {
+        printf("Error opening font: %s\n", TTF_GetError());
+        return 1;
+    }
+
+    
+    TTF_SetFontStyle(fps_font, TTF_STYLE_BOLD);
+
+    int w1, h1;
+    TTF_SizeText(fps_font, frame_rate_buffer, &w1, &h1);
+
+
+    
+    SDL_Color fps_color = {0, 255, 0};
+    SDL_Surface* fps_surface = TTF_RenderText_Solid(fps_font, frame_rate_buffer, fps_color);
+    if (fps_surface == NULL) {
+        printf("Error rendering text: %s\n", TTF_GetError());
+        return 1;
+    }
+
+    
+    SDL_Texture* fps_text= SDL_CreateTextureFromSurface(renderer, fps_surface);
+    SDL_FreeSurface(fps_surface );
+    if (fps_text== NULL) {
+        printf("Error creating text: %s\n", SDL_GetError());
+        return 1;
+    }
+
+   
 
        
   
@@ -405,43 +405,47 @@ int main(int argc, char *argv[]) {
         SDL_SetRenderTarget(renderer, NULL);
         SDL_RenderPresent(renderer);
 
-        // wait 1/60th of a second
-        SDL_Delay(1000/60);
+        //wait 1/60th of a second
+        SDL_Delay(1000/180);
     }
 
     // Uint32 frame_count;
     // Uint32 start_time = SDL_GetTicks();
-    SDL_Event event;
-    while (1) {
-        // Handle events
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                return 0;
-            }
+    // SDL_Event event;
+    // while (1) {
+    //     // Handle events
+    //     while (SDL_PollEvent(&event)) {
+    //         if (event.type == SDL_QUIT) {
+    //             SDL_DestroyRenderer(renderer);
+    //             SDL_DestroyWindow(window);
+    //             SDL_Quit();
+    //             return 0;
 
-            if (event.type == SDL_MOUSEBUTTONUP) {
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                shoot_bullet(x, y);
-            }
-        }
-        // update_fps(&frame_cout);
+    //         }
+
+    //         if (event.type == SDL_MOUSEBUTTONUP) {
+    //             int x, y;
+    //             SDL_GetMouseState(&x, &y);
+    //             shoot_bullet(x, y);
+    //         }
+    //     }
+    //     // update_fps(&frame_cout);
         
         
 
        
 
-        // Update the bullet positions
-        update_bullets();
+    //     // Update the bullet positions
+    //     update_bullets();
 
-        // Render the bullets
-        render_bullets(renderer);
+    //     // Render the bullets
+    //     render_bullets(renderer);
 
         
 
 
-        SDL_RenderPresent(renderer);
-    }
+    //     SDL_RenderPresent(renderer);
+    // }
 
     
 
@@ -452,7 +456,7 @@ int main(int argc, char *argv[]) {
     // clear the window
     SDL_RenderClear(renderer);
 
-    // draw the image, txt and bg to the window
+
 
     
     SDL_RenderCopy(renderer, background, NULL, NULL);
@@ -466,7 +470,7 @@ int main(int argc, char *argv[]) {
     
 
     // double buffering is when you draw to a "back buffer" that isn't displayed, then you swap the back buffer with the front buffer (the one that is displayed) so that what you drew appears on the screen. This prevents flickering
-    SDL_RenderPresent(renderer);
+    // SDL_RenderPresent(renderer);
 
 
     

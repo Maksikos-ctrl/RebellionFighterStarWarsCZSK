@@ -1,41 +1,41 @@
-export LD_PRELOAD=$(shell find /usr -name libasan.so)
+# A simple Makefile for compiling small SDL projects
 
 # set the compiler
-CC = gcc
+CC := gcc
 
 # set the compiler flags
-CFLAGS := $(shell sdl2-config --libs --cflags) -ggdb3 -O0 --std=c99 -Wall -fsanitize=address -static-libasan -g
-LDFLAGS := $(shell sdl2-config --static-libs) -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -Wl,--no-as-needed,-rpath=.
-
-
+CFLAGS := `sdl2-config --libs --cflags` -ggdb3 -O0 --std=c99 -Wall -lSDL2_image -lm -lSDL2_ttf
+ASAN_FLAGS := -g -fsanitize=address
+# add header files here
 HDRS :=
 
+# add source files here
 SRCS := main.c bullets.c
 
+# generate names of object files
 OBJS := $(SRCS:.c=.o)
 
 # name of executable
 EXEC := intro
 
-all: $(EXEC)
+# default recipe
+# all: $(EXEC)
 
-# recipe for building the executable
-$(EXEC): $(OBJS)
-	LD_PRELOAD=$$(echo '#include <unistd.h>\n __attribute__((constructor)) void preload() { setenv("LD_PRELOAD", "libasan.so", 1); }' | $(CC) -x c - -fPIC -shared -ldl -o preload.so)
+# recipe for building the final executable
+$(EXEC): $(OBJS) $(HDRS) Makefile
+	$(CC) -o $@ $(ASAN_FLAGS) $(OBJS) $(CFLAGS)
 
+# recipe for building object files
+$(OBJS): $(@:.o=.c) $(HDRS) Makefile
+	$(CC) -o $@ $(@:.o=.c) -c $(ASAN_FLAGS) $(CFLAGS)
 
-# recipe for building main.o
-main.o: main.c
-	$(CC) $(CFLAGS) -c main.c
-
-# recipe for building bullets.o
-bullets.o: bullets.c bullets.h
-	$(CC) $(CFLAGS) -c bullets.c 
-
-.PHONY: clean
-
+# recipe to clean the workspace
 clean:
-	rm -f $(EXEC) $(OBJS) preload.so
+	rm -f $(EXEC) $(OBJS)
+
+# .PHONY: all clean
+
+
 
 
 
