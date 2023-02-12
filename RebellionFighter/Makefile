@@ -10,7 +10,7 @@ ASAN_FLAGS := -g -fsanitize=address
 HDRS :=
 
 # add source files here
-SRCS := main.c bullets.c
+SRCS := main.c bullets.c resources.c init.c font.c hearts.c
 
 # generate names of object files
 OBJS := $(SRCS:.c=.o)

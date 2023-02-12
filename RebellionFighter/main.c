@@ -11,187 +11,97 @@ this file was created for the purpose of handling keyboard input
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_ttf.h>
-#include "bullets.h"
+
 #include <stdbool.h>
 #include <math.h>
 
-#define WINDOW_HEIGHT 960
-#define WINDOW_WIDTH 580
-#define SCREEN_WIDTH 80
-#define SCREEN_HEIGHT 80
-#define width 100
-#define height 600
-
-#define SPEED 350
+#include "bullets.h"
+#include "constants.h"
+#include "init.h"
+#include "font.h"
 
 
-
-
-
-
-// speed in pixels/second
-
-
-// void update_fps(int *frame_count) {
-//     (*frame_count)++;
-// }
-
-
-
-
+SDL_Window *window = NULL;
+SDL_Renderer *renderer = NULL;
+SDL_Texture *texture = NULL;
+SDL_Texture *background = NULL;
+TTF_Font *font = NULL;
+SDL_Texture *text = NULL;
+SDL_Texture *heart, *heart2, *heart3 = NULL;
 
 
 int main(int argc, char *argv[]) {
-     // 0 == success
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    SDL_Window* window = SDL_CreateWindow("Star wars. Rebellion Fighter!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_HEIGHT, WINDOW_WIDTH, 0);
-
-    if (!window) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-   
-    Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
-
-    if (!renderer) {
-        printf("SDL_CreateRenderer Error: %s");
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-
-  
-    SDL_Surface* image = IMG_Load("assets/pngwing.png");
-
-    if (!image) {
-        printf("IMG_Load Error: %s",IMG_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }     
-
-   
-
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, image);
-    SDL_FreeSurface(image);
-
-    if (!texture) {
-        printf("SDL_CreateTextureFromSurface Error: %s",SDL_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    } 
-    
-  
-    SDL_Surface* backgroundSurface = IMG_Load("assets/pikrepo.jpg");
-    if (!backgroundSurface ) {
-        printf("IMG_Load Error: %s",IMG_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    } 
-   
-    SDL_Texture* background = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
-    SDL_FreeSurface(backgroundSurface);
-
-    if (!background) {
-        printf("SDL_CreateTextureFromSurface Error: %s",SDL_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-
-   
-    if (TTF_Init() != 0) {
-        printf("Error initializing SDL_ttf: %s\n", TTF_GetError());
-        return 1;
-    }
-
-   
-    TTF_Font* font = TTF_OpenFont("assets/arial.ttf", 14);
-    if (font == NULL) {
-        printf("Error opening font: %s\n", TTF_GetError());
-        return 1;
-    }
 
     
 
+
+    if (!init_sdl(&window, &renderer)) {
+        return 1;
+    }
+
+
+
+  
+    if (!font_init(&font, renderer)) {
+        // TTF_CloseFont(font);
+        // TTF_Quit();
+        // SDL_DestroyRenderer(renderer);
+        // SDL_DestroyWindow(window);
+        return 1;
+    }
+
+    if (!load_text(renderer, &font, &text, "Score", 255, 255, 255, 255)) {
+        // TTF_CloseFont(font);
+        // TTF_Quit();
+        // SDL_DestroyRenderer(renderer);
+        // SDL_DestroyWindow(window);
+        return 1;
+    }
+
+
+    if (!load_image(renderer, "assets/pngwing.png")) {
+        // SDL_DestroyRenderer(renderer);
+        // SDL_DestroyWindow(window);
+        
+        printf("Failed to load texture");
+        return 1;
+    }
+
+     
+    if (!load_background(renderer, "assets/pikrepo.jpg")) {
+        // SDL_DestroyTexture(texture);
+        // SDL_DestroyRenderer(renderer);
+        // SDL_DestroyWindow(window);
+        
+        printf("Failed to load bg texture");
+        return 1;
+    }
+      
+
     
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-
-  
-    int w, h;
-    TTF_SizeText(font, "Score", &w, &h);
-
-
+    if(!init_heart1(renderer, "assets/fullHeart.png")) {
+        // SDL_DestroyTexture(texture);
+        // SDL_DestroyRenderer(renderer);
+        // SDL_DestroyWindow(window);
+        return 1;
+    }
    
-    SDL_Color color = {255, 255, 255, 255};
-    SDL_Surface* surface = TTF_RenderText_Solid(font, "Score", color);
-    if (surface == NULL) {
-        printf("Error rendering text: %s\n", TTF_GetError());
+
+    if(!init_heart2(renderer, "assets/fullHeart.png")) {
+        // SDL_DestroyTexture(texture);
+        // SDL_DestroyRenderer(renderer);
+        // SDL_DestroyWindow(window);
         return 1;
     }
 
-
-    SDL_Texture* text= SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
-    if (text== NULL) {
-        printf("Error creating text: %s\n", SDL_GetError());
+    if(!init_heart3(renderer, "assets/fullHeart.png")) {
+        // SDL_DestroyTexture(texture);
+        // SDL_DestroyRenderer(renderer);
+        // SDL_DestroyWindow(window);
         return 1;
     }
-
-
-
-
-    SDL_Texture *heart, *heart2, *heart3;
-  
-    SDL_Surface *heartSurface = IMG_Load("assets/fullHeart.png");
-    if (!heartSurface ) {
-        printf("IMG_Load Error: %s",IMG_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-
-    heart = SDL_CreateTextureFromSurface(renderer, heartSurface);
-    SDL_FreeSurface(heartSurface);
-
-
- 
-    SDL_Surface *heartSurface2 = IMG_Load("assets/fullHeart.png");
-    if (!heartSurface2 ) {
-        printf("IMG_Load Error: %s",IMG_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    heart2 = SDL_CreateTextureFromSurface(renderer, heartSurface2);
-    SDL_FreeSurface(heartSurface2);
-
-
-    SDL_Surface *heartSurface3 = IMG_Load("assets/fullHeart.png");
-    if (!heartSurface3 ) {
-        printf("IMG_Load Error: %s",IMG_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-    heart3 = SDL_CreateTextureFromSurface(renderer, heartSurface3);
-    SDL_FreeSurface(heartSurface3);
+    
+   
 
   
     int frame_rate = 0, frame_start = SDL_GetTicks();
@@ -269,15 +179,12 @@ int main(int argc, char *argv[]) {
     fps_dest.w = w1;
     fps_dest.h = h1;
     
-
-
-  
-
-
-
-   
     SDL_QueryTexture(text, NULL, NULL, &text_dest.w, &text_dest.h);
-    SDL_QueryTexture(texture, NULL, NULL, &img_dest.w, &img_dest.h);
+    int query_error = SDL_QueryTexture(texture, NULL, NULL, &img_dest.w, &img_dest.h);
+    if (query_error != 0) {
+        printf("SDL_QueryTexture error: %s", SDL_GetError());
+        return 1;
+    }
     SDL_QueryTexture(fps_text, NULL, NULL, &fps_dest.w, &fps_dest.h);
     SDL_QueryTexture(heart, NULL, NULL, &heart_dest.w, &heart_dest.h);
     SDL_QueryTexture(heart2, NULL, NULL, &heart2_dest.w, &heart2_dest.h);
@@ -301,9 +208,9 @@ int main(int argc, char *argv[]) {
 
 
     int close_requested = 0;
-    // int score = 0;
+    
 
-    // anim loop
+    
     while (!close_requested) {
         
         
@@ -405,7 +312,7 @@ int main(int argc, char *argv[]) {
         SDL_SetRenderTarget(renderer, NULL);
         SDL_RenderPresent(renderer);
 
-        //wait 1/60th of a second
+        //wait 1/180th of a second
         SDL_Delay(1000/180);
     }
 
@@ -430,10 +337,12 @@ int main(int argc, char *argv[]) {
     SDL_DestroyTexture(heart3);
     TTF_CloseFont(font);
     TTF_CloseFont(fps_font);
+    TTF_Quit();
 
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    SDL_Quit();
     
     
 
