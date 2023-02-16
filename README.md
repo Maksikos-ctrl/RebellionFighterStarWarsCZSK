@@ -1,5 +1,5 @@
   
-# ![image](https://user-images.githubusercontent.com/69985852/219415108-e1b20d1a-6c30-4ace-abac-3febb01707f6.png) StarWars Rebellion Fighter
+# ⚔️🤖🌌✨🔫💫🛸🌟🛰 StarWars Rebellion Fighter 🌌⚔🔫
 
 A 2D game developed using SDL library
 
