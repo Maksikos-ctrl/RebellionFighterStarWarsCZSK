@@ -1,7 +1,10 @@
 #include "font.h"
 
 
-bool font_init(TTF_Font **font, SDL_Renderer *renderer) {
+
+
+
+void font_init(TTF_Font **font, SDL_Renderer *renderer) {
     if (TTF_Init() != 0) {
         printf("Error initializing SDL_ttf: %s\n", TTF_GetError());
         return false;
@@ -15,14 +18,16 @@ bool font_init(TTF_Font **font, SDL_Renderer *renderer) {
 
     TTF_SetFontStyle(*font, TTF_STYLE_BOLD);
 
+    
+
     // TTF_CloseFont(font);
     //TTF_Quit();
 
-    return true;
+    
 
 }
 
-bool load_text(SDL_Renderer *renderer, TTF_Font **font, SDL_Texture **text, const char *str, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+void load_text(SDL_Renderer *renderer, TTF_Font **font, SDL_Texture **text, const char *str, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
     int w, h;
     TTF_SizeText(*font, str, &w, &h);
 
@@ -40,5 +45,5 @@ bool load_text(SDL_Renderer *renderer, TTF_Font **font, SDL_Texture **text, cons
         return false;
     }
     
-    return;
+    
 }

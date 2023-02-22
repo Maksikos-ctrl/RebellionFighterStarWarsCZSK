@@ -16,90 +16,187 @@ this file was created for the purpose of handling keyboard input
 #include <math.h>
 
 #include "bullets.h"
-#include "constants.h"
+
 #include "init.h"
+#include "resources.h"
 #include "font.h"
 
 
-SDL_Window *window = NULL;
-SDL_Renderer *renderer = NULL;
-SDL_Texture *texture = NULL;
-SDL_Texture *background = NULL;
-TTF_Font *font = NULL;
-SDL_Texture *text = NULL;
-SDL_Texture *heart, *heart2, *heart3 = NULL;
+SDL_Window *window;
+SDL_Renderer *renderer;
+SDL_Texture *texture;
+SDL_Texture *background;
+TTF_Font *font;
+SDL_Texture *text;
+SDL_Texture *heart, *heart2, *heart3;
+SDL_Surface *image;
+SDL_Surface *backgroundSurface;
+
 
 
 int main(int argc, char *argv[]) {
 
     
-
-
     if (!init_sdl(&window, &renderer)) {
         return 1;
     }
 
+    
 
-
-  
-    if (!font_init(&font, renderer)) {
-        // TTF_CloseFont(font);
-        // TTF_Quit();
-        // SDL_DestroyRenderer(renderer);
-        // SDL_DestroyWindow(window);
+    if (!(image = IMG_Load("assets/pngwing.png"))) {
+        printf("Failed to load image: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
         return 1;
     }
+
+    if (!load_image(renderer, "assets/pngwing.png", &texture, image, window)) {
+        printf("Failed to load texture");
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        return 1;
+    }
+
+    if (!(backgroundSurface = IMG_Load("assets/pikrepo.jpg"))) {
+        printf("Failed to load bgImage: %s\n", IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        return 1;
+    }
+     
+    if (!load_background(renderer, "assets/pikrepo.jpg", &background, backgroundSurface, window)) {
+        printf("SDL_CreateTextureFromSurface Error: %s",SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        return 1;
+    }
+
+
+
+    if (!font_init(&font, renderer)) {
+        printf("Failed to load text");
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        return 1;
+    }
+
+
 
     if (!load_text(renderer, &font, &text, "Score", 255, 255, 255, 255)) {
-        // TTF_CloseFont(font);
-        // TTF_Quit();
-        // SDL_DestroyRenderer(renderer);
-        // SDL_DestroyWindow(window);
+        printf("Failed to load text");
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
         return 1;
     }
 
-
-    if (!load_image(renderer, "assets/pngwing.png")) {
-        // SDL_DestroyRenderer(renderer);
-        // SDL_DestroyWindow(window);
-        
-        printf("Failed to load texture");
-        return 1;
-    }
-
-     
-    if (!load_background(renderer, "assets/pikrepo.jpg")) {
-        // SDL_DestroyTexture(texture);
-        // SDL_DestroyRenderer(renderer);
-        // SDL_DestroyWindow(window);
-        
-        printf("Failed to load bg texture");
-        return 1;
-    }
       
 
     
-    if(!init_heart1(renderer, "assets/fullHeart.png")) {
-        // SDL_DestroyTexture(texture);
-        // SDL_DestroyRenderer(renderer);
-        // SDL_DestroyWindow(window);
-        return 1;
-    }
+    // if(!init_heart1(renderer, "assets/fullHeart.png")) {
+    //     SDL_DestroyTexture(texture);
+    //     SDL_DestroyRenderer(renderer);
+    //     SDL_DestroyWindow(window);
+    //     return 1;
+    // }
    
 
-    if(!init_heart2(renderer, "assets/fullHeart.png")) {
-        // SDL_DestroyTexture(texture);
-        // SDL_DestroyRenderer(renderer);
-        // SDL_DestroyWindow(window);
+    // if(!init_heart2(renderer, "assets/fullHeart.png")) {
+    //     SDL_DestroyTexture(texture);
+    //     SDL_DestroyRenderer(renderer);
+    //     SDL_DestroyWindow(window);
+    //     return 1;
+    // }
+
+    // if(!init_heart3(renderer, "assets/fullHeart.png")) {
+    //     SDL_DestroyTexture(texture);
+    //     SDL_DestroyRenderer(renderer);
+    //     SDL_DestroyWindow(window);
+    //     return 1;
+    // }
+
+
+ 
+      
+    // if (TTF_Init() != 0) {
+    //     printf("Error initializing SDL_ttf: %s\n", TTF_GetError());
+    //     return 1;
+    // }
+
+   
+    // TTF_Font* font = TTF_OpenFont("assets/arial.ttf", 14);
+    // if (font == NULL) {
+    //     printf("Error opening font: %s\n", TTF_GetError());
+    //     return 1;
+    // }
+
+    
+
+    
+    // TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+
+  
+    // int w, h;
+    // TTF_SizeText(font, "Score", &w, &h);
+
+
+   
+    // SDL_Color color = {255, 255, 255, 255};
+    // SDL_Surface* surface = TTF_RenderText_Solid(font, "Score", color);
+    // if (surface == NULL) {
+    //     printf("Error rendering text: %s\n", TTF_GetError());
+    //     return 1;
+    // }
+
+
+    // SDL_Texture* text= SDL_CreateTextureFromSurface(renderer, surface);
+    // SDL_FreeSurface(surface);
+    // if (text== NULL) {
+    //     printf("Error creating text: %s\n", SDL_GetError());
+    //     return 1;
+    // }
+
+
+
+
+    SDL_Texture *heart, *heart2, *heart3;
+  
+    SDL_Surface *heartSurface = IMG_Load("assets/fullHeart.png");
+    if (!heartSurface ) {
+        printf("IMG_Load Error: %s",IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         return 1;
     }
 
-    if(!init_heart3(renderer, "assets/fullHeart.png")) {
-        // SDL_DestroyTexture(texture);
-        // SDL_DestroyRenderer(renderer);
-        // SDL_DestroyWindow(window);
+    heart = SDL_CreateTextureFromSurface(renderer, heartSurface);
+    SDL_FreeSurface(heartSurface);
+
+
+ 
+    SDL_Surface *heartSurface2 = IMG_Load("assets/fullHeart.png");
+    if (!heartSurface2 ) {
+        printf("IMG_Load Error: %s",IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
         return 1;
     }
+    heart2 = SDL_CreateTextureFromSurface(renderer, heartSurface2);
+    SDL_FreeSurface(heartSurface2);
+
+
+    SDL_Surface *heartSurface3 = IMG_Load("assets/fullHeart.png");
+    if (!heartSurface3 ) {
+        printf("IMG_Load Error: %s",IMG_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    heart3 = SDL_CreateTextureFromSurface(renderer, heartSurface3);
+    SDL_FreeSurface(heartSurface3);
+
     
    
 
@@ -164,7 +261,7 @@ int main(int argc, char *argv[]) {
     img_dest.y = 100;
 
     
-    heart_dest.x = width + heart_dest.w + 800;
+    heart_dest.x = width + heart_dest.w + 1120;
     heart_dest.y = 0;
 
     heart2_dest.x = heart_dest.x + heart_dest.w - 30;

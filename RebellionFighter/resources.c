@@ -1,39 +1,61 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "constants.h"
+#include "init.h"
+#include "resources.h"
 
 
-SDL_Texture* load_image(SDL_Renderer *renderer, const char *img_path) {
-    SDL_Surface* image = IMG_Load(img_path);
-    if (!image) {
-        printf("IMG_Load Error: %s",IMG_GetError());
-        return NULL;
+
+
+void load_image(SDL_Renderer *renderer, const char *img_path, SDL_Texture **texture, SDL_Surface *image, SDL_Window *window) {
+
+    if (image == NULL) {
+        printf("Failed to load image\n");
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        exit(1);
     }
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, image);
+    *texture = SDL_CreateTextureFromSurface(renderer, image);
     SDL_FreeSurface(image);
 
-    return texture;
+
+    if (!*texture) {
+        printf("SDL_CreateTextureFromSurface Error: %s",SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        // SDL_DestroyWindow(window);
+        SDL_Quit();
+        exit(1);
+    }
+
+
+    
+
+    
 }
 
 
-void free_resources(SDL_Texture *texture) {
-    if (texture) {
-        SDL_DestroyTexture(texture);
-    }
-}
 
-SDL_Texture* load_background(SDL_Renderer *renderer, const char *bg_path) {
-    SDL_Surface* backgroundSurface = IMG_Load(bg_path);
-    if (!backgroundSurface) {
-        printf("IMG_Load Error: %s",IMG_GetError());
-        return NULL;
+void load_background(SDL_Renderer *renderer, const char *bg_path, SDL_Texture **background, SDL_Surface *backgroundSurface, SDL_Window *window) {
+
+    if (backgroundSurface == NULL) {
+        printf("Failed to load background surface\n");
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        exit(1);
     }
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
+    *background = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_FreeSurface(backgroundSurface);
 
+   
+    if (!*background) {
+        printf("SDL_CreateTextureFromSurface Error: %s",SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        exit(1);
+    }
 
 
-    return texture;
+
+   
 }
