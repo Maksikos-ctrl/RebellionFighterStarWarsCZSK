@@ -2,6 +2,10 @@
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
         "*.ejs": "html",
-        "sdl_ttf.h": "c"
+        "sdl_ttf.h": "c",
+        "stdbool.h": "c",
+        "resources.h": "c",
+        "stdio.h": "c",
+        "sdl_timer.h": "c"
     }
 }

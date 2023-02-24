@@ -5,12 +5,8 @@
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_ttf.h>
 #include "bullets.h"
+#include "struct.h"
 
-
-typedef struct {
-    int x, y, isActive;
-
-} sBullet;
 
 sBullet bullets[MAX_BULLETS];
 

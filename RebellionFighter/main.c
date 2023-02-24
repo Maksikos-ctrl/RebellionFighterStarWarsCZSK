@@ -1,6 +1,20 @@
 /*
 
-this file was created for the purpose of handling keyboard input
+Rebellion fighhter game is game where you have to fight for the Republic against the Empire and save the world from the evil forces.
+
+
+
+
+######  ####### ######  ####### #       #       ### ####### #     #    ####### ###  #####  #     # ####### ####### ######  
+#     # #       #     # #       #       #        #  #     # ##    #    #        #  #     # #     #    #    #       #     # 
+#     # #       #     # #       #       #        #  #     # # #   #    #        #  #       #     #    #    #       #     # 
+######  #####   ######  #####   #       #        #  #     # #  #  #    #####    #  #  #### #######    #    #####   ######  
+#   #   #       #     # #       #       #        #  #     # #   # #    #        #  #     # #     #    #    #       #   #   
+#    #  #       #     # #       #       #        #  #     # #    ##    #        #  #     # #     #    #    #       #    #  
+#     # ####### ######  ####### ####### ####### ### ####### #     #    #       ###  #####  #     #    #    ####### #     # 
+
+
+
 
 */
 
@@ -31,6 +45,9 @@ SDL_Texture *text;
 SDL_Texture *heart, *heart2, *heart3;
 SDL_Surface *image;
 SDL_Surface *backgroundSurface;
+SDL_Surface *heart_image1, *heart_image2, *heart_image3;
+SDL_Surface* fps_surface;
+SDL_Texture* fps_text;
 
 
 
@@ -91,129 +108,51 @@ int main(int argc, char *argv[]) {
 
       
 
-    
-    // if(!init_heart1(renderer, "assets/fullHeart.png")) {
-    //     SDL_DestroyTexture(texture);
-    //     SDL_DestroyRenderer(renderer);
-    //     SDL_DestroyWindow(window);
-    //     return 1;
-    // }
-   
-
-    // if(!init_heart2(renderer, "assets/fullHeart.png")) {
-    //     SDL_DestroyTexture(texture);
-    //     SDL_DestroyRenderer(renderer);
-    //     SDL_DestroyWindow(window);
-    //     return 1;
-    // }
-
-    // if(!init_heart3(renderer, "assets/fullHeart.png")) {
-    //     SDL_DestroyTexture(texture);
-    //     SDL_DestroyRenderer(renderer);
-    //     SDL_DestroyWindow(window);
-    //     return 1;
-    // }
-
-
- 
-      
-    // if (TTF_Init() != 0) {
-    //     printf("Error initializing SDL_ttf: %s\n", TTF_GetError());
-    //     return 1;
-    // }
-
-   
-    // TTF_Font* font = TTF_OpenFont("assets/arial.ttf", 14);
-    // if (font == NULL) {
-    //     printf("Error opening font: %s\n", TTF_GetError());
-    //     return 1;
-    // }
-
-    
-
-    
-    // TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-
-  
-    // int w, h;
-    // TTF_SizeText(font, "Score", &w, &h);
-
-
-   
-    // SDL_Color color = {255, 255, 255, 255};
-    // SDL_Surface* surface = TTF_RenderText_Solid(font, "Score", color);
-    // if (surface == NULL) {
-    //     printf("Error rendering text: %s\n", TTF_GetError());
-    //     return 1;
-    // }
-
-
-    // SDL_Texture* text= SDL_CreateTextureFromSurface(renderer, surface);
-    // SDL_FreeSurface(surface);
-    // if (text== NULL) {
-    //     printf("Error creating text: %s\n", SDL_GetError());
-    //     return 1;
-    // }
-
-
-
-
-    SDL_Texture *heart, *heart2, *heart3;
-  
-    SDL_Surface *heartSurface = IMG_Load("assets/fullHeart.png");
-    if (!heartSurface ) {
-        printf("IMG_Load Error: %s",IMG_GetError());
+    if (!(heart_image1 = IMG_Load("assets/fullHeart.png"))) {
+        printf("Failed to load heart image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
-        SDL_Quit();
         return 1;
     }
 
-    heart = SDL_CreateTextureFromSurface(renderer, heartSurface);
-    SDL_FreeSurface(heartSurface);
-
-
- 
-    SDL_Surface *heartSurface2 = IMG_Load("assets/fullHeart.png");
-    if (!heartSurface2 ) {
-        printf("IMG_Load Error: %s",IMG_GetError());
+    if (!(heart_image2 = IMG_Load("assets/fullHeart.png"))) {
+        printf("Failed to load heart image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
-        SDL_Quit();
         return 1;
     }
-    heart2 = SDL_CreateTextureFromSurface(renderer, heartSurface2);
-    SDL_FreeSurface(heartSurface2);
 
-
-    SDL_Surface *heartSurface3 = IMG_Load("assets/fullHeart.png");
-    if (!heartSurface3 ) {
-        printf("IMG_Load Error: %s",IMG_GetError());
+    if (!(heart_image3 = IMG_Load("assets/fullHeart.png"))) {
+        printf("Failed to load heart image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
-        SDL_Quit();
         return 1;
     }
-    heart3 = SDL_CreateTextureFromSurface(renderer, heartSurface3);
-    SDL_FreeSurface(heartSurface3);
 
     
+    if(!init_heart1(renderer, "assets/fullHeart.png", texture, heart_image1, window)) {
+        SDL_DestroyTexture(texture);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        return 1;
+    }
    
 
-  
-    int frame_rate = 0, frame_start = SDL_GetTicks();
-   
-    int elapsed_time = SDL_GetTicks() - frame_start;
-    if (elapsed_time > 0) {
-        frame_rate = 1000 / elapsed_time;
-    } else {
-        frame_rate = 60; 
+    if(!init_heart2(renderer, "assets/fullHeart.png", &texture, heart_image2, window)) {
+        SDL_DestroyTexture(texture);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        return 1;
     }
 
-      
+    if(!init_heart3(renderer, "assets/fullHeart.png", &texture, heart_image3, window)) {
+        SDL_DestroyTexture(texture);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        return 1;
+    }
 
     char frame_rate_buffer[50];
-    sprintf(frame_rate_buffer, "FPS: %d", frame_rate); 
 
     TTF_Font* fps_font = TTF_OpenFont("assets/arial.ttf", 14);
     if (fps_font == NULL) {
@@ -243,10 +182,8 @@ int main(int argc, char *argv[]) {
         printf("Error creating text: %s\n", SDL_GetError());
         return 1;
     }
-
-   
-
-       
+ 
+          
   
     SDL_Rect img_dest;
 
@@ -277,11 +214,7 @@ int main(int argc, char *argv[]) {
     fps_dest.h = h1;
     
     SDL_QueryTexture(text, NULL, NULL, &text_dest.w, &text_dest.h);
-    int query_error = SDL_QueryTexture(texture, NULL, NULL, &img_dest.w, &img_dest.h);
-    if (query_error != 0) {
-        printf("SDL_QueryTexture error: %s", SDL_GetError());
-        return 1;
-    }
+    SDL_QueryTexture(image, NULL, NULL, &img_dest.w, &img_dest.h);
     SDL_QueryTexture(fps_text, NULL, NULL, &fps_dest.w, &fps_dest.h);
     SDL_QueryTexture(heart, NULL, NULL, &heart_dest.w, &heart_dest.h);
     SDL_QueryTexture(heart2, NULL, NULL, &heart2_dest.w, &heart2_dest.h);
@@ -291,25 +224,28 @@ int main(int argc, char *argv[]) {
     img_dest.w /= 4;
     img_dest.h /= 4;
 
-    // start sprite in the center of the screen
+   
+    
+
+
+    int up = 0, down = 0, left = 0, right = 0;
+    int close_requested = 0;
+    int frame_rate = 60;
     float x_pos = (WINDOW_WIDTH - img_dest.w) / 2;
     float y_pos = (WINDOW_HEIGHT - img_dest.h) / 2;
     
     float x_vel = 0;
     float y_vel = 0;
-
-
-
-    int up = 0, down = 0, left = 0, right = 0;
-
-
-
-    int close_requested = 0;
     
+
+
 
     
     while (!close_requested) {
-        
+
+
+        int frame_start = SDL_GetTicks();
+    
         
       
         SDL_Event event;
@@ -363,58 +299,130 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        
 
-        // determine velocity
-        x_vel = y_vel = 0;
-
+        // Update game stats
         if (up && !down) {
             y_vel = -SPEED;
         } else if (down && !up) {
             y_vel = SPEED;
+        } else {
+            y_vel = 0;
         }
 
         if (left && !right) {
             x_vel = -SPEED;
         } else if (right && !left) {
             x_vel = SPEED;
+        } else {
+            x_vel = 0;
         }
 
-        // update positions
-        x_pos += x_vel / 60;
-        y_pos += y_vel / 60;
+      
+        x_pos += x_vel / frame_rate;
+        y_pos += y_vel / frame_rate;
 
         // set the positions in the struct
-        img_dest.y = (int) y_pos;
-        img_dest.x = (int) x_pos;
-        
-       
-        SDL_RenderClear(renderer);
+        img_dest.x = x_pos;
+        img_dest.y = y_pos;
 
-   
-        
-        SDL_RenderCopy(renderer, background, NULL, NULL);
-
-        
-        SDL_RenderCopy(renderer, text, NULL, &text_dest);
-
+        int w1, h1;
+        SDL_QueryTexture(fps_text, NULL, NULL, &w1, &h1);
+        SDL_Rect fps_dest = {10, 10, w1, h1};
         SDL_RenderCopy(renderer, fps_text, NULL, &fps_dest);
 
+        SDL_Rect img_dest;
+
+        SDL_Rect text_dest;
+        SDL_Rect heart_dest, heart2_dest, heart3_dest;
+        
+
+        text_dest.x = 10;
+        text_dest.y = 10;
+
+        img_dest.x = 100;
+        img_dest.y = 100;
+
+        
+        heart_dest.x = width + heart_dest.w + 1120;
+        heart_dest.y = 0;
+
+        heart2_dest.x = heart_dest.x + heart_dest.w - 30;
+        heart2_dest.y = 0;
+
+        heart3_dest.x = heart2_dest.x + heart2_dest.w - 30;
+        heart3_dest.y = 0;
+
+
+        fps_dest.x = 10;
+        fps_dest.y = height - h1;
+        fps_dest.w = w1;
+        fps_dest.h = h1;
+        
+        SDL_QueryTexture(text, NULL, NULL, &text_dest.w, &text_dest.h);
+        SDL_QueryTexture(image, NULL, NULL, &img_dest.w, &img_dest.h);
+        SDL_QueryTexture(fps_text, NULL, NULL, &fps_dest.w, &fps_dest.h);
+        SDL_QueryTexture(heart, NULL, NULL, &heart_dest.w, &heart_dest.h);
+        SDL_QueryTexture(heart2, NULL, NULL, &heart2_dest.w, &heart2_dest.h);
+        SDL_QueryTexture(heart3, NULL, NULL, &heart3_dest.w, &heart3_dest.h);
+        
+
+        img_dest.w /= 4;
+        img_dest.h /= 4;
+
+
+        
+
+
+
+        // Rendering
+        
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, background, NULL, NULL);
+        SDL_RenderCopy(renderer, text, NULL, &text_dest);
+        SDL_RenderCopy(renderer, fps_text, NULL, &fps_dest);
         SDL_RenderCopy(renderer, heart, NULL, &heart_dest);
         SDL_RenderCopy(renderer, heart2, NULL, &heart2_dest);
         SDL_RenderCopy(renderer, heart3, NULL, &heart3_dest);
-
-        
-        SDL_RenderCopy(renderer, texture, NULL, &img_dest);
-
-        SDL_SetRenderTarget(renderer, NULL);
+        SDL_RenderCopy(renderer, image, NULL, &img_dest);
         SDL_RenderPresent(renderer);
 
-        //wait 1/180th of a second
-        SDL_Delay(1000/180);
+        
+        
+      
+        int elapsed_time = SDL_GetTicks() - frame_start;
+        if (elapsed_time > 0) {
+            frame_rate = 1000 / elapsed_time;
+        }
+
+        if (frame_rate > 0) {
+            sprintf(frame_rate_buffer, "FPS: %d", frame_rate); 
+
+           
+            fps_surface = TTF_RenderText_Solid(fps_font, frame_rate_buffer, fps_color);
+            if (fps_surface == NULL) {
+                printf("Error rendering text: %s\n", TTF_GetError());
+                return 1;
+            }
+
+           
+            SDL_DestroyTexture(fps_text);            
+            fps_text = SDL_CreateTextureFromSurface(renderer, fps_surface);
+            if (fps_text == NULL) {
+                printf("Error creating texture: %s\n", SDL_GetError());
+                return 1;
+            }
+
+            SDL_FreeSurface(fps_surface);
+            SDL_Delay(1000/180);
+        }
+ 
+       
+       
+        
     }
 
 
-    // message on the screen
 
     printf("Press any key to continue...");
 
@@ -422,8 +430,6 @@ int main(int argc, char *argv[]) {
     SDL_RenderClear(renderer);
 
 
-
-    // clean up resources before exiting
 
     SDL_DestroyTexture(texture);
     SDL_DestroyTexture(background);
