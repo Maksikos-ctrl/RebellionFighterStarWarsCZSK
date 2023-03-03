@@ -34,7 +34,7 @@ bool load_text(SDL_Renderer *renderer, TTF_Font **font, SDL_Texture **text, cons
     SDL_Color color = {r, g, b, a};
     SDL_Surface* surface = TTF_RenderText_Solid(*font, str, color);
     if (surface == NULL) {
-        printf("Error rendering text: %s\n", TTF_GetError());
+        printf("Error rendering text1: %s\n", TTF_GetError());
         return false;
     }
 

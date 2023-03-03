@@ -46,8 +46,7 @@ SDL_Texture *heart, *heart2, *heart3;
 SDL_Surface *image;
 SDL_Surface *backgroundSurface;
 SDL_Surface *heart_image1, *heart_image2, *heart_image3;
-SDL_Surface* fps_surface;
-SDL_Texture* fps_text;
+
 
 
 
@@ -71,6 +70,7 @@ int main(int argc, char *argv[]) {
         printf("Failed to load texture");
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+        SDL_FreeSurface(image);
         return 1;
     }
 
@@ -85,6 +85,7 @@ int main(int argc, char *argv[]) {
         printf("SDL_CreateTextureFromSurface Error: %s",SDL_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+        SDL_DestroyTexture(background);
         return 1;
     }
 
@@ -94,6 +95,7 @@ int main(int argc, char *argv[]) {
         printf("Failed to load text");
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+        TTF_CloseFont(font);
         return 1;
     }
 
@@ -103,6 +105,7 @@ int main(int argc, char *argv[]) {
         printf("Failed to load text");
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+        SDL_DestroyTexture(text);
         return 1;
     }
 
@@ -112,6 +115,7 @@ int main(int argc, char *argv[]) {
         printf("Failed to load heart image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+        SDL_DestroyTexture(texture);
         return 1;
     }
 
@@ -119,6 +123,7 @@ int main(int argc, char *argv[]) {
         printf("Failed to load heart image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+        SDL_DestroyTexture(texture);
         return 1;
     }
 
@@ -126,11 +131,12 @@ int main(int argc, char *argv[]) {
         printf("Failed to load heart image: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+        SDL_DestroyTexture(texture);
         return 1;
     }
 
     
-    if(!init_heart1(renderer, "assets/fullHeart.png", texture, heart_image1, window)) {
+    if(!init_heart1(renderer, "assets/fullHeart.png", &texture, heart_image1, window)) {
         SDL_DestroyTexture(texture);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
@@ -171,12 +177,14 @@ int main(int argc, char *argv[]) {
     SDL_Color fps_color = {0, 255, 0};
     SDL_Surface* fps_surface = TTF_RenderText_Solid(fps_font, frame_rate_buffer, fps_color);
     if (fps_surface == NULL) {
-        printf("Error rendering text: %s\n", TTF_GetError());
+        printf("Error rendering text2: %s\n", TTF_GetError());
         return 1;
     }
 
     
     SDL_Texture* fps_text= SDL_CreateTextureFromSurface(renderer, fps_surface);
+    TTF_CloseFont(fps_font);
+    SDL_DestroyTexture(fps_text);
     SDL_FreeSurface(fps_surface);
     if (fps_text== NULL) {
         printf("Error creating text: %s\n", SDL_GetError());
@@ -256,45 +264,45 @@ int main(int argc, char *argv[]) {
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.scancode)
-                {
-                case SDL_SCANCODE_W:
-                case SDL_SCANCODE_UP:
-                    up = 1;
+                    {
+                        case SDL_SCANCODE_W:
+                        case SDL_SCANCODE_UP:
+                            up = 1;
+                            break;
+                        case SDL_SCANCODE_A:
+                        case SDL_SCANCODE_LEFT:
+                            left = 1;
+                            break;
+                        case SDL_SCANCODE_S:
+                        case SDL_SCANCODE_DOWN:
+                            down = 1;
+                            break;
+                        case SDL_SCANCODE_D:
+                        case SDL_SCANCODE_RIGHT:
+                            right = 1;
+                            break;
+                    }
                     break;
-                case SDL_SCANCODE_A:
-                case SDL_SCANCODE_LEFT:
-                    left = 1;
-                    break;
-                case SDL_SCANCODE_S:
-                case SDL_SCANCODE_DOWN:
-                    down = 1;
-                    break;
-                case SDL_SCANCODE_D:
-                case SDL_SCANCODE_RIGHT:
-                    right = 1;
-                    break;
-                }
-                break;
-            case SDL_KEYUP:
-                switch (event.key.keysym.scancode)
-                {
-                case SDL_SCANCODE_W:
-                case SDL_SCANCODE_UP:
-                    up = 0;
-                    break;
-                case SDL_SCANCODE_A:
-                case SDL_SCANCODE_LEFT:
-                    left = 0;
-                    break;
-                case SDL_SCANCODE_S:
-                case SDL_SCANCODE_DOWN:
-                    down = 0;
-                    break;
-                case SDL_SCANCODE_D:
-                case SDL_SCANCODE_RIGHT:
-                    right = 0;
-                    break;
-                }
+                case SDL_KEYUP:
+                    switch (event.key.keysym.scancode)
+                    {
+                        case SDL_SCANCODE_W:
+                        case SDL_SCANCODE_UP:
+                            up = 0;
+                            break;
+                        case SDL_SCANCODE_A:
+                        case SDL_SCANCODE_LEFT:
+                            left = 0;
+                            break;
+                        case SDL_SCANCODE_S:
+                        case SDL_SCANCODE_DOWN:
+                            down = 0;
+                            break;
+                        case SDL_SCANCODE_D:
+                        case SDL_SCANCODE_RIGHT:
+                            right = 0;
+                            break;
+                    }
                 break;
             }
         }
@@ -327,9 +335,9 @@ int main(int argc, char *argv[]) {
         img_dest.y = y_pos;
 
         int w1, h1;
-        SDL_QueryTexture(fps_text, NULL, NULL, &w1, &h1);
+       
         SDL_Rect fps_dest = {10, 10, w1, h1};
-        SDL_RenderCopy(renderer, fps_text, NULL, &fps_dest);
+       
 
         SDL_Rect img_dest;
 
@@ -401,20 +409,21 @@ int main(int argc, char *argv[]) {
            
             fps_surface = TTF_RenderText_Solid(fps_font, frame_rate_buffer, fps_color);
             if (fps_surface == NULL) {
-                printf("Error rendering text: %s\n", TTF_GetError());
+                printf("Error rendering text3: %s\n", TTF_GetError());
                 return 1;
             }
 
            
             SDL_DestroyTexture(fps_text);            
             fps_text = SDL_CreateTextureFromSurface(renderer, fps_surface);
+            
             if (fps_text == NULL) {
                 printf("Error creating texture: %s\n", SDL_GetError());
                 return 1;
             }
 
             SDL_FreeSurface(fps_surface);
-            SDL_Delay(1000/180);
+            // SDL_Delay(1000/180);
         }
  
        
