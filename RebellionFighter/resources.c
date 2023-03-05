@@ -6,20 +6,20 @@
 
 
 
-void load_image(SDL_Renderer *renderer, const char *img_path, SDL_Texture **texture, SDL_Surface *image, SDL_Window *window) {
+void load_image(SDL_Renderer *renderer, const char *img_path, SDL_Texture **image, SDL_Surface *imageSurface, SDL_Window *window) {
 
-    if (image == NULL) {
+    if (imageSurface == NULL) {
         printf("Failed to load image\n");
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         exit(1);
     }
 
-    *texture = SDL_CreateTextureFromSurface(renderer, image);
-    SDL_FreeSurface(image);
+    *image= SDL_CreateTextureFromSurface(renderer, imageSurface);
+    SDL_FreeSurface(imageSurface);
 
 
-    if (!*texture) {
+    if (!*image) {
         printf("SDL_CreateTextureFromSurface Error: %s",SDL_GetError());
         SDL_DestroyRenderer(renderer);
         // SDL_DestroyWindow(window);

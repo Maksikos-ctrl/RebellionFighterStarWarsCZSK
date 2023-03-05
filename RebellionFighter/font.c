@@ -16,7 +16,7 @@ bool font_init(TTF_Font **font, SDL_Renderer *renderer) {
         return false;
     }
 
-    TTF_SetFontStyle(*font, TTF_STYLE_BOLD);
+    TTF_SetFontStyle(*font, TTF_STYLE_NORMAL);
 
     return true;
 
